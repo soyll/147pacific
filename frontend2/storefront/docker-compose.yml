@@ -1,0 +1,22 @@
+version: "3"
+
+services:
+  saleor-storefront:
+    container_name: saleor-storefront
+    build:
+      dockerfile: Dockerfile
+      args:
+        NEXT_PUBLIC_SALEOR_API_URL: ${NEXT_PUBLIC_SALEOR_API_URL:-http://localhost:8080}
+        NEXT_PUBLIC_STOREFRONT_URL: ${NEXT_PUBLIC_STOREFRONT_URL:-http://localhost:3000}
+    environment:
+      - NEXT_PUBLIC_SALEOR_API_URL=${NEXT_PUBLIC_SALEOR_API_URL:-http://localhost:8080}
+      - NEXT_PUBLIC_STOREFRONT_URL=${NEXT_PUBLIC_STOREFRONT_URL:-http://localhost:3000}
+    restart: always
+    ports:
+      - 3000:3000
+    networks:
+      - saleor_network
+
+networks:
+  saleor_network:
+    external: false

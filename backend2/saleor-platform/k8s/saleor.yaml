@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: saleor-backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: saleor-backend
+  template:
+    metadata:
+      labels:
+        app: saleor-backend
+    spec:
+      containers:
+      - name: saleor-backend
+        image: ghcr.io/saleor/saleor:3.20
+        imagePullPolicy: Always
+        env:
+          - name: FRONTEND_URL
+            valueFrom:
+              configMapKeyRef:
+                name: env
+                key: FRONTEND_URL
+          - name: PAYMENT_APP_URL
+            valueFrom:
+              configMapKeyRef:
+                name: env
+                key: PAYMENT_APP_URL
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: saleor-backend
+spec:
+  ports:
+    - protocol: TCP
+      port: 8000
+      targetPort: 8000
+  selector:
+    app: saleor-backend

@@ -60,7 +60,7 @@ docker_build(
 # AFTER the database has been populated (to ensure migrations, etc.)
 local_resource(
     name='generate-schema',
-    cmd='curl -o frontend/storefront/schema.graphql http://localhost:8000/graphql',
+    cmd='curl -o frontend/storefront/schema.graphql http://localhost:8000/graphql/',
     deps=['frontend/storefront/schema.graphql'],
     # Waits for DB population to finish first
     resource_deps=['populate-db']

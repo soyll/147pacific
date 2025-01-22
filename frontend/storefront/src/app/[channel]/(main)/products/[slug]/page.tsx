@@ -14,6 +14,8 @@ import { CheckoutAddLineDocument, ProductDetailsDocument, ProductListDocument } 
 import * as Checkout from "@/lib/checkout";
 import { AvailabilityMessage } from "@/ui/components/AvailabilityMessage";
 
+export const dynamic = 'force-dynamic';
+
 export async function generateMetadata(
 	{
 		params,

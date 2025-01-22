@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: env
+  namespace: saleor
+data:
+  FRONTEND_URL: "http://saleor-frontend:3000"
+  PAYMENT_APP_URL: "http://dummy-payment-app:8001"
+  BACKEND_URL: "http://saleor-backend:8000" 

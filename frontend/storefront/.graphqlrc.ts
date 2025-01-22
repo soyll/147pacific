@@ -16,7 +16,7 @@ if (!schemaUrl && process.env.NODE_ENV !== "production") {
 
 const config: CodegenConfig = {
 	overwrite: true,
-	schema: schemaUrl,
+	schema: './schema.graphql',
 	documents: "src/graphql/**/*.graphql",
 	generates: {
 		"src/gql/": {

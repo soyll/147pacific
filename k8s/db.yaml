@@ -1,0 +1,127 @@
+# PostgreSQL Database
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: db
+  namespace: saleor
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: db
+  template:
+    metadata:
+      labels:
+        app: db
+    spec:
+      containers:
+      - name: db
+        image: postgres:15-alpine
+        env:
+        - name: POSTGRES_USER
+          value: saleor
+        - name: POSTGRES_PASSWORD
+          value: saleor
+        ports:
+        - containerPort: 5432
+        volumeMounts:
+        - name: saleor-db
+          mountPath: /var/lib/postgresql/data
+        - name: replica-user
+          mountPath: /docker-entrypoint-initdb.d
+      volumes:
+      - name: saleor-db
+        persistentVolumeClaim:
+          claimName: saleor-db-pvc
+      - name: replica-user
+        configMap:
+          name: replica-user-sql
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: db
+  namespace: saleor
+spec:
+  ports:
+  - port: 5432
+    targetPort: 5432
+  selector:
+    app: db
+---
+# Redis Service
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redis
+  namespace: saleor
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: redis
+  template:
+    metadata:
+      labels:
+        app: redis
+    spec:
+      containers:
+      - name: redis
+        image: redis:7.0-alpine
+        ports:
+        - containerPort: 6379
+        volumeMounts:
+        - name: saleor-redis
+          mountPath: /data
+      volumes:
+      - name: saleor-redis
+        persistentVolumeClaim:
+          claimName: saleor-redis-pvc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: redis
+  namespace: saleor
+spec:
+  ports:
+  - port: 6379
+    targetPort: 6379
+  selector:
+    app: redis
+---
+# PVC for PostgreSQL
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: saleor-db-pvc
+  namespace: saleor
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+---
+# PVC for Redis
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: saleor-redis-pvc
+  namespace: saleor
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+---
+# ConfigMap for replica_user.sql
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: replica-user-sql
+  namespace: saleor
+data:
+  replica_user.sql: |
+    CREATE USER saleor_replica WITH REPLICATION; 

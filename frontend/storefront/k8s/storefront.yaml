@@ -2,6 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: saleor-frontend
+  namespace: saleor
 spec:
   replicas: 1
   selector:
@@ -16,16 +17,22 @@ spec:
       - name: saleor-frontend
         image: saleor-frontend:latest
         env:
-          - name: BACKEND_URL
+          - name: NEXT_PUBLIC_SALEOR_API_URL
             valueFrom:
               configMapKeyRef:
                 name: env
                 key: BACKEND_URL
+          - name: NEXT_PUBLIC_STOREFRONT_URL
+            valueFrom:
+              configMapKeyRef:
+                name: env
+                key: FRONTEND_URL
 ---
 apiVersion: v1
 kind: Service
 metadata:
   name: saleor-frontend
+  namespace: saleor
 spec:
   ports:
     - protocol: TCP

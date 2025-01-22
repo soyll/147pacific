@@ -23,7 +23,7 @@ COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
 # Copy schema locally for GraphQL code generation
-COPY frontend/storefront/schema.graphql ./
+COPY schema.graphql ./
 
 # Set environment variables for Next.js
 ENV NEXT_OUTPUT=standalone
@@ -41,15 +41,20 @@ FROM base AS runner
 WORKDIR /app
 
 ENV NODE_ENV production
+ENV NEXT_PUBLIC_SALEOR_API_URL=${NEXT_PUBLIC_SALEOR_API_URL}
+ENV NEXT_PUBLIC_STOREFRONT_URL=${NEXT_PUBLIC_STOREFRONT_URL}
+
+# Add non-root user and set permissions
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
+RUN chown -R nextjs:nodejs /app
 
-RUN mkdir .next
-RUN chown nextjs:nodejs .next
+# Create .next directory and set permissions before switching user
+RUN mkdir .next && chown nextjs:nodejs .next
+
+USER nextjs
 
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
-
-USER nextjs
 
 CMD ["node", "server.js"]

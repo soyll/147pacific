@@ -1,5 +1,5 @@
 /** @type {import('next').NextConfig} */
-const config = {
+const nextConfig = {
 	images: {
 		remotePatterns: [
 			{
@@ -9,14 +9,16 @@ const config = {
 	},
 	experimental: {
 		typedRoutes: false,
+		// Disable static page generation for dynamic routes
+		workerThreads: false,
+		cpus: 1
 	},
 	// used in the Dockerfile
-	output:
-		process.env.NEXT_OUTPUT === "standalone"
-			? "standalone"
-			: process.env.NEXT_OUTPUT === "export"
-			  ? "export"
-			  : undefined,
+	output: 'standalone',
+	// Configure dynamic routes to be generated at runtime
+	async generateStaticParams() {
+		return [];
+	},
 };
 
-export default config;
+export default nextConfig;

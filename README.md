@@ -1,18 +1,14 @@
 ![Saleor Platform](https://user-images.githubusercontent.com/249912/71523206-4e45f800-28c8-11ea-84ba-345a9bfc998a.png)
 
 <div align="center">
-  <h1>Saleor Development Environment</h1>
+  <h1>Saleor Quickstart - Commerce as Code</h1>
 </div>
 
 <div align="center">
-  <p>Run all Saleor services in a development environment using Tilt.</p>
+  <p>Run all Saleor services on the same enviroment from one repository using commerce as code to build your own store with your own products and content models.</p>
 </div>
 
 <div align="center">
-  <a href="https://tilt.dev/">🏠 Tilt Website</a>
-  <span> • </span>
-  <a href="https://docs.tilt.dev/">📚 Tilt Docs</a>
-  <span> • </span>
   <a href="https://saleor.io/blog/">📰 Saleor Blog</a>
   <span> • </span>
   <a href="https://twitter.com/getsaleor">🐦 Twitter</a>
@@ -29,9 +25,9 @@
 
 ## About
 
-### What is this Development Environment?
+### What is this Commerce as Code?
 
-This development environment provides the easiest way to start local development with all the major Saleor services using Tilt:
+This repository provides the easiest way to start local development with all the major Saleor services using Tilt:
 - [Core GraphQL API](https://github.com/saleor/saleor)
 - [Dashboard](https://github.com/saleor/saleor-dashboard)
 - [Storefront](https://github.com/saleor/storefront)
@@ -65,7 +61,7 @@ git clone https://github.com/your-repo/saleor-dev-environment.git
 
 2. Go to the cloned directory:
 ```bash
-cd saleor-dev-environment
+cd quickstart
 ```
 
 3. Start the development environment:

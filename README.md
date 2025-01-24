@@ -1,11 +1,11 @@
 ![Saleor Platform](https://user-images.githubusercontent.com/249912/71523206-4e45f800-28c8-11ea-84ba-345a9bfc998a.png)
 
 <div align="center">
-  <h1>Saleor Quickstart - Commerce as Code</h1>
+  <h1>Saleor Quickstart</h1>
 </div>
 
 <div align="center">
-  <p>Run all Saleor services on the same enviroment from one repository using commerce as code to build your own store with your own products and content models.</p>
+  <p>Run all Saleor services on the same environment from one repository using commerce as code to build your own store with your own products and content models.</p>
 </div>
 
 <div align="center">
@@ -25,7 +25,7 @@
 
 ## About
 
-### What is this Commerce as Code?
+### What is Saleor Quickstart?
 
 This repository provides the easiest way to start local development with all the major Saleor services using Tilt:
 - [Core GraphQL API](https://github.com/saleor/saleor)
@@ -39,28 +39,65 @@ This repository provides the easiest way to start local development with all the
 *Keep in mind this repository is for local development only and is not meant to be deployed in any production environment!*
 
 ## Requirements
+
 1. [Docker Desktop](https://docs.docker.com/install/)
+   - Windows/MacOS: Minimum 5 GB of memory required
+   - Windows/MacOS: Enable file sharing for the project directory
+   - Linux: No special configuration needed
+   - Required images:
+     ```bash
+     docker pull ghcr.io/saleor/saleor:latest
+     ```
+
 2. [Tilt](https://docs.tilt.dev/install.html)
-3. Kubernetes (enabled in Docker Desktop)
+   - macOS: `brew install tilt`
+   - Windows: `scoop install tilt`
+   - Linux: `curl -fsSL https://raw.githubusercontent.com/tilt-dev/tilt/master/scripts/install.sh | bash`
 
-## How to clone the repository?
+3. Kubernetes
+   - Enabled in Docker Desktop
+   - No additional installation needed
 
-To clone the repository, run the following command:
+## Initial Setup
 
+### Option 1: Automatic Installation (Recommended)
+
+1. Clone the repository:
 ```bash
-git clone https://github.com/your-repo/saleor-dev-environment.git
+git clone https://github.com/saleor/quickstart.git
+cd quickstart
 ```
 
-## How to run it?
+2. Run the installation script:
+```bash
+# Make the script executable
+chmod +x ./install.sh
+
+# Run the installation script
+./install.sh
+```
+
+The script will:
+- Check and install Docker Desktop if needed
+- Install Tilt if not present
+- Verify Kubernetes is enabled
+- Pull required Docker images
+- Guide you through any manual steps needed
+
+### Option 2: Manual Installation
+
+If you prefer to install manually, follow these steps:
 
 1. Enable Kubernetes in Docker Desktop:
     - Open Docker Desktop
     - Go to Settings -> Kubernetes
     - Check "Enable Kubernetes"
     - Click "Apply & Restart"
+    - Windows/MacOS: Make sure you have dedicated at least 5 GB of memory (Settings -> Resources -> Advanced)
 
-2. Go to the cloned directory:
+2. Clone the repository:
 ```bash
+git clone https://github.com/saleor/quickstart.git
 cd quickstart
 ```
 
@@ -73,6 +110,10 @@ tilt up
 ```bash
 tilt up --web
 ```
+
+5. Default Saleor Dashboard Admin Access:
+   - Email: `admin@example.com`
+   - Password: `admin`
 
 ## Where is everything running?
 
@@ -94,12 +135,12 @@ The environment supports live code updates for:
 
 ### Resource Organization
 Tilt UI organizes resources into sections:
-1. Namespace
-2. Backend (API, DB, Redis, etc.)
-3. Schema Generation
-4. Frontend (Storefront)
-5. Services (Payment)
-6. K8s (Configurations)
+1. **Namespace**: Kubernetes namespace setup
+2. **Backend**: API, Database, Redis, etc.
+3. **Schema**: GraphQL schema generation
+4. **Frontend**: Storefront application
+5. **Services**: Payment service
+6. **K8s**: Kubernetes configurations
 
 ## Troubleshooting
 
@@ -150,3 +191,13 @@ If you have any questions or feedback, do not hesitate to contact us via:
 Disclaimer: Everything you see here is open and free to use as long as you comply with the [license](LICENSE). There are no hidden charges. We promise to do our best to fix bugs and improve the code.
 
 #### Crafted with ❤️ by [Saleor Commerce](https://saleor.io/)
+
+## Project Structure
+```
+.
+├── backend/           # Backend services
+├── frontend/          # Storefront application
+├── service/          # Additional services (payment, etc.)
+├── k8s/              # Kubernetes configurations
+└── Tiltfile         # Tilt configuration
+```

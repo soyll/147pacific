@@ -38,7 +38,34 @@ This repository provides the easiest way to start local development with all the
 
 *Keep in mind this repository is for local development only and is not meant to be deployed in any production environment!*
 
-## Requirements
+## Initial Setup
+
+### Option 1: Using Installation Script (Recommended)
+
+1. Clone the repository:
+```bash
+git clone https://github.com/saleor/quickstart.git
+cd quickstart
+```
+
+2. Run the installation script:
+```bash
+# Make the script executable
+chmod +x ./install.sh
+
+# Run the installation script
+./install.sh
+```
+
+The script will automatically check and install all requirements, including:
+- Docker Desktop
+- Tilt
+- Kubernetes setup
+- Required Docker images
+
+### Option 2: Manual Installation
+
+First, ensure you have the following requirements:
 
 1. [Docker Desktop](https://docs.docker.com/install/)
    - Windows/MacOS: Minimum 5 GB of memory required
@@ -58,35 +85,7 @@ This repository provides the easiest way to start local development with all the
    - Enabled in Docker Desktop
    - No additional installation needed
 
-## Initial Setup
-
-### Option 1: Automatic Installation (Recommended)
-
-1. Clone the repository:
-```bash
-git clone https://github.com/saleor/quickstart.git
-cd quickstart
-```
-
-2. Run the installation script:
-```bash
-# Make the script executable
-chmod +x ./install.sh
-
-# Run the installation script
-./install.sh
-```
-
-The script will:
-- Check and install Docker Desktop if needed
-- Install Tilt if not present
-- Verify Kubernetes is enabled
-- Pull required Docker images
-- Guide you through any manual steps needed
-
-### Option 2: Manual Installation
-
-If you prefer to install manually, follow these steps:
+Then follow these steps:
 
 1. Enable Kubernetes in Docker Desktop:
     - Open Docker Desktop

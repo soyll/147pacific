@@ -119,6 +119,9 @@ gql/
 # Saleor specific
 /saleor-storefront*/
 
+# Local repos that should be cloned separately
+/service/configurator/
+
 # Sentry
 .sentryclirc
 

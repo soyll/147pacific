@@ -1,0 +1,44 @@
+{
+  "templates": {
+    "component": "Create a React component for {purpose} with the following requirements:\n- TypeScript with proper typing\n- Use Tailwind CSS for styling\n- Follow existing project patterns\n- Handle loading and error states\n- Implement responsive design",
+    
+    "graphqlQuery": "Create a GraphQL query for {entity} that fetches the following fields:\n{fields}\nEnsure proper typing with TypeScript and follow existing query patterns.",
+    
+    "test": "Write a test for the {component} component that tests:\n- Rendering with default props\n- User interactions\n- Loading states\n- Error handling",
+    
+    "page": "Create a Next.js page component for {route} that:\n- Uses appropriate layout components\n- Fetches required data using GraphQL\n- Implements proper SEO with metadata\n- Handles authentication if needed\n- Is fully responsive",
+    
+    "refactor": "Refactor the following code to:\n- Improve performance\n- Enhance readability\n- Follow best practices\n- Fix any potential bugs\n\n```{code}```",
+    
+    "productType": "Create a GraphQL mutation to define a product type for {productCategory} with the following:\n- Name and slug\n- Whether it has variants\n- Shipping requirements\n- Weight handling\n- Tax class\n- Attributes needed for this product type",
+    
+    "attribute": "Create a GraphQL mutation to define an attribute for {attributeName} with the following:\n- Type: {attributeType}\n- Input type: {inputType}\n- Values: {attributeValues}\n- Is it required\n- Visibility settings",
+    
+    "variantGenerator": "Create a function to generate all possible variants for a product with the following attributes:\n{attributes}\nEnsure each variant has:\n- A descriptive name based on attribute combinations\n- A unique SKU generation pattern\n- Support for setting variant-specific pricing\n- Support for variant-specific stock levels",
+    
+    "schemaAwareComponent": "Create a React component based on the Saleor GraphQL schema for {entityType}.\nUse appropriate TypeScript typing from the schema.\nInclude proper loading, error, and empty states.\nHandle all required properties and nullable fields correctly.\nImplement Tailwind CSS styling."
+  },
+  
+  "snippets": {
+    "errorBoundary": "import React, { ErrorInfo, ReactNode } from 'react';\n\ninterface ErrorBoundaryProps {\n  children: ReactNode;\n  fallback: ReactNode;\n}\n\ninterface ErrorBoundaryState {\n  hasError: boolean;\n}\n\nclass ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundaryState> {\n  constructor(props: ErrorBoundaryProps) {\n    super(props);\n    this.state = { hasError: false };\n  }\n\n  static getDerivedStateFromError(_: Error): ErrorBoundaryState {\n    return { hasError: true };\n  }\n\n  componentDidCatch(error: Error, errorInfo: ErrorInfo): void {\n    console.error('ErrorBoundary caught an error', error, errorInfo);\n  }\n\n  render(): ReactNode {\n    if (this.state.hasError) {\n      return this.props.fallback;\n    }\n\n    return this.props.children;\n  }\n}\n\nexport default ErrorBoundary;",
+    
+    "loadingState": "export const LoadingState = () => (\n  <div className=\"flex items-center justify-center w-full h-full p-4\">\n    <div className=\"animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-primary\"></div>\n  </div>\n);",
+    
+    "attributeFieldRenderer": "// Dynamic field renderer based on attribute type\nexport const AttributeFieldRenderer = ({ attribute, value, onChange }) => {\n  switch (attribute.inputType) {\n    case 'DROPDOWN':\n      return (\n        <select\n          value={value}\n          onChange={(e) => onChange(e.target.value)}\n          className=\"w-full p-2 border border-gray-300 rounded\"\n        >\n          <option value=\"\">Select {attribute.name}</option>\n          {attribute.values.map((val) => (\n            <option key={val.id} value={val.id}>\n              {val.name}\n            </option>\n          ))}\n        </select>\n      );\n    case 'BOOLEAN':\n      return (\n        <label className=\"flex items-center space-x-2\">\n          <input\n            type=\"checkbox\"\n            checked={value}\n            onChange={(e) => onChange(e.target.checked)}\n            className=\"h-4 w-4\"\n          />\n          <span>{attribute.name}</span>\n        </label>\n      );\n    case 'RICH_TEXT':\n      return (\n        <div>\n          <label className=\"block text-sm font-medium text-gray-700\">\n            {attribute.name}\n          </label>\n          <textarea\n            value={value}\n            onChange={(e) => onChange(e.target.value)}\n            className=\"w-full p-2 border border-gray-300 rounded mt-1\"\n            rows={4}\n          />\n        </div>\n      );\n    // Add other input types as needed\n    default:\n      return (\n        <input\n          type=\"text\"\n          value={value}\n          onChange={(e) => onChange(e.target.value)}\n          className=\"w-full p-2 border border-gray-300 rounded\"\n          placeholder={attribute.name}\n        />\n      );\n  }\n};"
+  },
+  
+  "schemaTemplates": {
+    "useProductQuery": "import { useQuery } from '@apollo/client';\nimport { GetProductDocument, GetProductQuery, GetProductQueryVariables } from '../generated/graphql';\n\nexport const useProduct = (id: string, channel: string) => {\n  const { data, loading, error } = useQuery<GetProductQuery, GetProductQueryVariables>(\n    GetProductDocument,\n    {\n      variables: { id, channel },\n      skip: !id || !channel,\n    }\n  );\n\n  return {\n    product: data?.product,\n    loading,\n    error: error ? error.message : null\n  };\n};",
+    
+    "useCheckoutHook": "import { useMutation, useQuery } from '@apollo/client';\nimport {\n  CheckoutCreate,\n  CheckoutCreateVariables,\n  CheckoutLinesAdd,\n  CheckoutLinesAddVariables,\n  CheckoutShippingAddressUpdate,\n  CheckoutShippingAddressUpdateVariables\n} from '../generated/graphql';\nimport { useState, useEffect } from 'react';\n\nexport const useCheckout = () => {\n  const [checkoutId, setCheckoutId] = useState<string | null>(null);\n  \n  // Load checkout from storage on mount\n  useEffect(() => {\n    const storedCheckoutId = localStorage.getItem('checkoutId');\n    if (storedCheckoutId) setCheckoutId(storedCheckoutId);\n  }, []);\n  \n  // Save checkout ID to storage\n  useEffect(() => {\n    if (checkoutId) {\n      localStorage.setItem('checkoutId', checkoutId);\n    }\n  }, [checkoutId]);\n  \n  // Mutations\n  const [createCheckoutMutation] = useMutation<CheckoutCreate, CheckoutCreateVariables>(\n    CheckoutCreateDocument\n  );\n  \n  const [addCheckoutLinesMutation] = useMutation<CheckoutLinesAdd, CheckoutLinesAddVariables>(\n    CheckoutLinesAddDocument\n  );\n  \n  const [updateShippingAddressMutation] = useMutation<\n    CheckoutShippingAddressUpdate,\n    CheckoutShippingAddressUpdateVariables\n  >(CheckoutShippingAddressUpdateDocument);\n  \n  // Methods\n  const createCheckout = async (email: string, lines: CheckoutLineInput[]) => {\n    const { data } = await createCheckoutMutation({\n      variables: {\n        input: {\n          email,\n          lines,\n          channel: process.env.NEXT_PUBLIC_DEFAULT_CHANNEL\n        }\n      }\n    });\n    \n    if (data?.checkoutCreate?.checkout?.id) {\n      setCheckoutId(data.checkoutCreate.checkout.id);\n    }\n    \n    return data?.checkoutCreate?.checkout;\n  };\n  \n  // Additional methods for checkout operations\n  \n  return {\n    checkoutId,\n    createCheckout,\n    // Return other methods\n  };\n};"
+  },
+  
+  "saleorConcepts": {
+    "channels": "Multi-channel sales platform concept that affects all modules",
+    "products": "Product catalog with variants, attributes, and media",
+    "checkout": "Multi-step process with shipping, billing and payment integration",
+    "orders": "Order workflow with status management and price freeze period",
+    "transactions": "Payment processing with app integrations and refund handling",
+    "discounts": "Promotions, vouchers and catalog discount pricing"
+  }
+} 

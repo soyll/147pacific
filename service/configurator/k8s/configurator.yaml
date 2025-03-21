@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: saleor-configurator
+  namespace: saleor
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: saleor-configurator
+  template:
+    metadata:
+      labels:
+        app: saleor-configurator
+    spec:
+      containers:
+      - name: saleor-configurator
+        image: saleor-configurator
+        imagePullPolicy: IfNotPresent
+        env:
+        - name: SALEOR_API_URL
+          value: "http://host.docker.internal:8000/graphql/"
+        - name: APP_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: saleor-secrets
+              key: configurator-app-token
+        - name: USE_LOCAL_SCHEMA
+          value: "true"
+        - name: SCHEMA_PATH
+          value: "/app/schema/schema.graphql"
+        - name: LOG_LEVEL
+          value: "debug"
+        - name: NODE_ENV
+          value: "production"
+        volumeMounts:
+        - name: schema-volume
+          mountPath: /app/schema
+      volumes:
+      - name: schema-volume
+        emptyDir: {}
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: saleor-secrets
+  namespace: saleor
+type: Opaque
+stringData:
+  configurator-app-token: "gzPbLN1r4WVB4ah2qvm01DlIKQC0Je" 

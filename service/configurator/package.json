@@ -1,0 +1,35 @@
+{
+  "name": "saleor-configurator",
+  "type": "module",
+  "engines": {
+    "node": ">=20.0.0",
+    "pnpm": ">=8.0.0"
+  },
+  "saleor": {
+    "schemaVersion": "3.20"
+  },
+  "scripts": {
+    "bootstrap": "tsx src/commands/bootstrap.ts",
+    "retrieve": "tsx src/commands/retrieve.ts",
+    "fetch-schema": "echo \"Using schema provided by volume mount\" && exit 0",
+    "postinstall": "echo \"Skipping schema fetch in container build\" && exit 0",
+    "test": "vitest"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "prettier": "3.3.3",
+    "tsx": "^4.7.0",
+    "typescript": "^5.5.4",
+    "vitest": "^3.0.4"
+  },
+  "dependencies": {
+    "@urql/core": "^5.0.6",
+    "@urql/exchange-auth": "^2.2.0",
+    "dotenv": "^16.4.5",
+    "gql.tada": "^1.8.5",
+    "tiny-invariant": "^1.3.3",
+    "tslog": "^4.9.3",
+    "yaml": "^2.7.0",
+    "zod": "^3.24.1"
+  }
+}

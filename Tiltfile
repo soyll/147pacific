@@ -92,7 +92,8 @@ docker_build(
     ],
     build_args={
         'NEXT_PUBLIC_SALEOR_API_URL': 'http://host.docker.internal:8000/graphql/',
-        'NEXT_PUBLIC_STOREFRONT_URL': 'http://localhost:3000'
+        'NEXT_PUBLIC_STOREFRONT_URL': 'http://localhost:30080',
+        'HOSTNAME': '0.0.0.0'
     }
 )
 
@@ -126,7 +127,6 @@ k8s_yaml([
 # Configure frontend service
 k8s_resource(
     'saleor-frontend',
-    port_forwards=['3000:3000'],
     resource_deps=['generate-schema'],
     labels=['frontend']
 )
@@ -134,7 +134,6 @@ k8s_resource(
 # Configure payment service
 k8s_resource(
     'dummy-payment-app',
-    port_forwards=['8001:8001'],
     resource_deps=['populate-db'],
     labels=['services']
 )

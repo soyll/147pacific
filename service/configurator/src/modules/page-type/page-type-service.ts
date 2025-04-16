@@ -53,51 +53,75 @@ export class PageTypeService {
       attributesCount: input.attributes.length,
     });
 
-    const pageType = await this.getOrCreate(input.name);
+    try {
+      const pageType = await this.getOrCreate(input.name);
 
-    logger.debug("Creating attributes for page type", {
-      pageType: input.name,
-      attributes: input.attributes.map((a) => a.name),
-    });
-
-    const attributes = await this.attributeService.bootstrapAttributes({
-      attributeInputs: input.attributes.map((a) => ({
-        ...a,
-        type: "PAGE_TYPE",
-      })),
-    });
-
-    const attributeIds = attributes.map((attr) => attr.id);
-    const attributesToAssign = await this.filterOutAssignedAttributes(
-      pageType.id,
-      attributeIds
-    );
-
-    if (attributesToAssign.length > 0) {
-      logger.debug("Assigning attributes to page type", {
+      logger.debug("Creating attributes for page type", {
         pageType: input.name,
-        attributeCount: attributesToAssign.length,
+        attributes: input.attributes.map((a: any) => a.name),
       });
 
       try {
-        await this.repository.assignAttributes(pageType.id, attributesToAssign);
-        logger.debug("Successfully assigned attributes to page type", {
-          name: input.name,
+        const attributes = await this.attributeService.bootstrapAttributes({
+          attributeInputs: input.attributes.map((a: any) => ({
+            ...a,
+            type: "PAGE_TYPE",
+          })),
         });
-      } catch (error) {
-        logger.error("Failed to assign attributes to page type", {
-          error,
-          pageType: input.name,
-          attributeIds: attributesToAssign,
+
+        const attributeIds = attributes.map((attr: any) => attr.id);
+        const attributesToAssign = await this.filterOutAssignedAttributes(
+          pageType.id,
+          attributeIds
+        );
+
+        if (attributesToAssign.length > 0) {
+          logger.debug("Assigning attributes to page type", {
+            pageType: input.name,
+            attributeCount: attributesToAssign.length,
+            attributeIds: attributesToAssign
+          });
+
+          try {
+            await this.repository.assignAttributes(pageType.id, attributesToAssign);
+            logger.debug("Successfully assigned attributes to page type", {
+              name: input.name,
+            });
+          } catch (error: unknown) {
+            const err = error as Error;
+            logger.error("Failed to assign attributes to page type", {
+              error: err.message || String(error),
+              stack: err.stack || 'No stack trace',
+              pageType: input.name,
+              attributeIds: attributesToAssign,
+            });
+            throw error;
+          }
+        } else {
+          logger.debug("No new attributes to assign to page type", {
+            name: input.name,
+          });
+        }
+
+        return pageType;
+      } catch (error: unknown) {
+        const err = error as Error;
+        logger.error("Failed to create or assign attributes for page type", {
+          error: err.message || String(error),
+          stack: err.stack || 'No stack trace',
+          pageTypeName: input.name,
+          attributes: input.attributes.map((a: any) => a.name)
         });
         throw error;
       }
-    } else {
-      logger.debug("No new attributes to assign to page type", {
-        name: input.name,
+    } catch (error: unknown) {
+      const err = error as Error;
+      logger.error("Failed to create or get page type", {
+        error: err.message || String(error),
+        stack: err.stack || 'No stack trace',
+        pageTypeName: input.name
       });
+      throw error;
     }
-
-    return pageType;
   }
 }

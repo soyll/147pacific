@@ -103,24 +103,43 @@ export class AttributeService {
     }
 
     logger.debug(`Creating ${attributesToCreate.length} new attributes`);
-    try {
-      const createdAttributes = await Promise.all(
-        attributesToCreate.map((attribute) => {
-          const attributeInput = createAttributeInput(attribute);
-          logger.debug("Creating attribute", { name: attributeInput.name });
-          return this.repository.createAttribute(attributeInput);
-        })
-      );
-      logger.debug("Successfully created all attributes", {
-        count: createdAttributes.length,
-      });
-      return createdAttributes;
-    } catch (error) {
-      logger.error("Failed to create attributes", {
-        error: error instanceof Error ? error.message : "Unknown error",
-        count: attributesToCreate.length,
-      });
-      throw error;
+    const createdAttributes = [];
+    
+    for (const attribute of attributesToCreate) {
+      try {
+        const attributeInput = createAttributeInput(attribute);
+        logger.debug("Creating attribute", { 
+          name: attributeInput.name,
+          type: attributeInput.type,
+          inputType: attributeInput.inputType 
+        });
+        
+        const createdAttribute = await this.repository.createAttribute(attributeInput);
+        createdAttributes.push(createdAttribute);
+        
+        logger.debug("Successfully created attribute", {
+          name: attributeInput.name,
+          id: createdAttribute.id
+        });
+      } catch (error: unknown) {
+        const err = error as Error;
+        logger.error(`Failed to create attribute "${attribute.name}"`, {
+          error: err.message || String(error),
+          stack: err.stack || 'No stack trace',
+          attribute: {
+            name: attribute.name,
+            type: attribute.type,
+            inputType: attribute.inputType,
+            hasValues: attribute.values ? attribute.values.length : 0
+          }
+        });
+        throw error;
+      }
     }
+    
+    logger.debug("Successfully created all attributes", {
+      count: createdAttributes.length,
+    });
+    return [...(existingAttributes ?? []), ...createdAttributes];
   }
 }

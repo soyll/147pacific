@@ -90,7 +90,9 @@ export class PageTypeRepository implements PageTypeOperations {
     });
 
     if (!result.data?.pageTypeCreate?.pageType) {
-      throw new Error("Failed to create page type", result.error);
+      const errors = result.data?.pageTypeCreate?.errors || result.error?.message || 'Unknown error';
+      const errorMessage = `Failed to create page type: ${JSON.stringify(errors)}`;
+      throw new Error(errorMessage);
     }
 
     return result.data?.pageTypeCreate?.pageType;
@@ -119,7 +121,9 @@ export class PageTypeRepository implements PageTypeOperations {
     });
 
     if (!result.data?.pageAttributeAssign?.pageType) {
-      throw new Error("Failed to assign attributes to page type", result.error);
+      const errors = result.data?.pageAttributeAssign?.errors || result.error?.message || 'Unknown error';
+      const errorMessage = `Failed to assign attributes to page type: ${JSON.stringify(errors)}`;
+      throw new Error(errorMessage);
     }
 
     return result.data?.pageAttributeAssign?.pageType;

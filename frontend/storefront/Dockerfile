@@ -43,6 +43,9 @@ WORKDIR /app
 ENV NODE_ENV production
 ENV NEXT_PUBLIC_SALEOR_API_URL=${NEXT_PUBLIC_SALEOR_API_URL}
 ENV NEXT_PUBLIC_STOREFRONT_URL=${NEXT_PUBLIC_STOREFRONT_URL}
+# Force Next.js to bind to all interfaces
+ENV HOST=0.0.0.0
+ENV PORT=3000
 
 # Add non-root user and set permissions
 RUN addgroup --system --gid 1001 nodejs
@@ -57,4 +60,5 @@ USER nextjs
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 
-CMD ["node", "server.js"]
+# Explicitly set the host address to bind to all interfaces
+CMD ["node", "server.js", "-H", "0.0.0.0"]

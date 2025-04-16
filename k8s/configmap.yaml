@@ -4,6 +4,6 @@ metadata:
   name: env
   namespace: saleor
 data:
-  FRONTEND_URL: "http://saleor-frontend:3000"
-  PAYMENT_APP_URL: "http://dummy-payment-app:8001"
-  BACKEND_URL: "http://saleor-backend:8000" 
+  FRONTEND_URL: "http://localhost:30080"
+  PAYMENT_APP_URL: "http://localhost:30081"
+  BACKEND_URL: "http://host.docker.internal:8000/graphql/" 

@@ -86,7 +86,9 @@ export class AttributeRepository implements AttributeOperations {
     });
 
     if (!result.data?.attributeCreate?.attribute) {
-      throw new Error("Failed to create attribute");
+      const errors = result.data?.attributeCreate?.errors || result.error?.message || 'Unknown error';
+      const errorMessage = `Failed to create attribute "${attributeInput.name}": ${JSON.stringify(errors)}`;
+      throw new Error(errorMessage);
     }
 
     return result.data.attributeCreate.attribute as Attribute;

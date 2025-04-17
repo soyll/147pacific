@@ -16,7 +16,11 @@ local_resource(
 docker_compose('./backend/saleor-platform/docker-compose.yml')
 
 # Create shared network for service communication
-local('docker network create saleor-network || true')
+local_resource(
+    'create-network',
+    cmd='docker network create saleor-network 2>/dev/null || true',
+    labels=['backend']
+)
 
 # Create resources for all backend services
 dc_resource('api', labels=['backend'])
@@ -117,12 +121,12 @@ docker_build(
 # Load base Kubernetes configurations
 k8s_yaml(['k8s/namespace.yaml', 'k8s/configmap.yaml'])
 
-# Load application manifests
+# Load application manifests - include configurator
 k8s_yaml([
     'frontend/storefront/k8s/storefront.yaml',
     'service/dummy-payment-app/k8s/payment.yaml',
     'service/configurator/k8s/configurator.yaml'
-])
+], allow_duplicates=True)  # Allow later overrides with updated token
 
 # Configure frontend service
 k8s_resource(
@@ -175,10 +179,96 @@ docker_build(
     }
 )
 
-# Configure configurator service
+# Setup configurator permissions
+local_resource(
+    'setup-configurator-permissions',
+    cmd='''
+    # Retry the whole process up to 3 times
+    for attempt in {1..3}; do
+        echo "========================================================="
+        echo "Permission setup attempt $attempt of 3"
+        echo "========================================================="
+        
+        # Check if API is ready
+        for i in $(seq 1 10); do
+            echo "API check $i: Checking if API is ready..."
+            if curl -s http://localhost:8000/graphql/ > /dev/null; then
+                echo "API is ready. Proceeding with permission setup..."
+                break
+            else
+                echo "API not ready yet. Waiting 5 seconds..."
+                sleep 5
+            fi
+            
+            # If we've tried 10 times and API isn't ready, wait longer but don't fail
+            if [ $i -eq 10 ]; then
+                echo "API not fully ready yet. Waiting 30 seconds before next attempt..."
+                sleep 30
+            fi
+        done
+        
+        # Now try to set up permissions - use bash to ensure the script runs in its intended environment
+        echo "Running permission setup script..."
+        (cd service/configurator && bash ./setup-permissions.sh)
+        
+        # Check if setup was successful - make sure to check in the right location
+        if [ -f service/configurator/permission_setup_status ] && [ "$(cat service/configurator/permission_setup_status)" != "failed" ]; then
+            echo "✅ Permission setup completed successfully on attempt $attempt!"
+            TOKEN=$(cat service/configurator/permission_setup_status)
+            echo "Token will be applied: ${TOKEN:0:5}..."
+            exit 0
+        else
+            echo "❌ Permission setup failed on attempt $attempt."
+            
+            if [ $attempt -lt 3 ]; then
+                echo "Waiting 20 seconds before next attempt..."
+                sleep 20
+            else
+                echo "All 3 attempts failed. Check the API and verify credentials."
+                echo "Creating backup token for development..."
+                mkdir -p service/configurator
+                echo "DEVELOPMENT_DUMMY_TOKEN" > service/configurator/permission_setup_status
+                echo "WARNING: Using a dummy token that will not work. Fix permission setup."
+                exit 0  # Don't fail the Tilt process, but warn the user
+            fi
+        fi
+    done
+    ''',
+    resource_deps=['api', 'populate-db'],
+    labels=['services']
+)
+
+# Apply configurator deployment explicitly after permissions are set up
+local_resource(
+    'apply-configurator-yaml',
+    cmd='''
+    echo "Applying updated configurator.yaml with proper token..."
+    kubectl apply -f service/configurator/k8s/configurator.yaml -n saleor
+    
+    # Wait for the resource to be available
+    echo "Waiting for configurator deployment to be ready..."
+    for i in $(seq 1 10); do
+        if kubectl get deployment saleor-configurator -n saleor >/dev/null 2>&1; then
+            echo "✅ Configurator deployment found in Kubernetes"
+            break
+        else
+            echo "Waiting for configurator deployment... ($i/10)"
+            sleep 2
+        fi
+        
+        if [ $i -eq 10 ]; then
+            echo "⚠️ Timed out waiting for configurator deployment"
+        fi
+    done
+    ''',
+    resource_deps=['setup-configurator-permissions'],
+    labels=['services']
+)
+
+# Configure configurator service - must come after k8s_yaml loads it
 k8s_resource(
     'saleor-configurator',
-    resource_deps=['api', 'populate-db', 'copy-schema-to-configurator', 'generate-schema'],
+    resource_deps=['api', 'populate-db', 'copy-schema-to-configurator', 'generate-schema', 'setup-configurator-permissions', 'apply-configurator-yaml'],
     labels=['services']
 )
 

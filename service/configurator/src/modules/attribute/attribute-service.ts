@@ -30,7 +30,7 @@ const createAttributeInput = (input: AttributeInput): AttributeCreateInput => {
   if ("values" in input && input.values) {
     return {
       ...base,
-      values: input.values.map((value) => ({
+      values: input.values.map((value: { name: string }) => ({
         name: value.name,
       })),
     };
@@ -42,41 +42,6 @@ const createAttributeInput = (input: AttributeInput): AttributeCreateInput => {
 export class AttributeService {
   constructor(private repository: AttributeOperations) {}
 
-  async getOrCreate(name: string, type: "PRODUCT_TYPE" | "PAGE_TYPE") {
-    logger.debug("Looking up attribute", { name, type });
-    const existingAttributes = await this.repository.getAttributesByNames({
-      names: [name],
-      type,
-    });
-
-    const existingAttribute = existingAttributes?.[0];
-    if (existingAttribute) {
-      logger.debug("Found existing attribute", {
-        id: existingAttribute.id,
-        name: existingAttribute.name,
-      });
-      return existingAttribute;
-    }
-
-    logger.debug("Creating new attribute", { name, type });
-    return this.repository.createAttribute({
-      name,
-      type,
-      inputType: "DROPDOWN",
-    });
-  }
-
-  private filterOutExistingAttributes(
-    existingAttributes: Attribute[],
-    attributeInputs: AttributeInput[]
-  ) {
-    const filtered = attributeInputs.filter(
-      (attribute) => !existingAttributes?.some((a) => a.name === attribute.name)
-    );
-
-    return filtered;
-  }
-
   async bootstrapAttributes({
     attributeInputs,
   }: {
@@ -86,60 +51,36 @@ export class AttributeService {
       count: attributeInputs.length,
     });
 
-    const names = attributeInputs.map((attribute) => attribute.name);
-    logger.debug("Checking existing attributes", { nameCount: names.length });
+    const attributeNames = attributeInputs.map(attr => attr.name);
+    const attributeType = attributeInputs[0]?.type;
+    
     const existingAttributes = await this.repository.getAttributesByNames({
-      names,
+      names: attributeNames,
+      type: attributeType,
+    }) || [];
+    
+    logger.debug("Found existing attributes", {
+      count: existingAttributes.length,
+    });
+    
+    const existingAttributeNames = new Set(existingAttributes.map(attr => attr.name));
+    
+    const attributesToCreate = attributeInputs.filter(
+      attr => !existingAttributeNames.has(attr.name)
+    );
+    
+    logger.debug("Creating new attributes", {
+      count: attributesToCreate.length,
     });
 
-    const attributesToCreate = this.filterOutExistingAttributes(
-      existingAttributes ?? [],
-      attributeInputs
+    const newlyCreatedAttributes = await Promise.all(
+      attributesToCreate.map((attribute) => {
+        const attributeInput = createAttributeInput(attribute);
+        logger.debug("Creating attribute", { name: attributeInput.name });
+        return this.repository.createAttribute(attributeInput);
+      })
     );
 
-    if (!attributesToCreate.length) {
-      logger.debug("No new attributes to create");
-      return existingAttributes ?? [];
-    }
-
-    logger.debug(`Creating ${attributesToCreate.length} new attributes`);
-    const createdAttributes = [];
-    
-    for (const attribute of attributesToCreate) {
-      try {
-        const attributeInput = createAttributeInput(attribute);
-        logger.debug("Creating attribute", { 
-          name: attributeInput.name,
-          type: attributeInput.type,
-          inputType: attributeInput.inputType 
-        });
-        
-        const createdAttribute = await this.repository.createAttribute(attributeInput);
-        createdAttributes.push(createdAttribute);
-        
-        logger.debug("Successfully created attribute", {
-          name: attributeInput.name,
-          id: createdAttribute.id
-        });
-      } catch (error: unknown) {
-        const err = error as Error;
-        logger.error(`Failed to create attribute "${attribute.name}"`, {
-          error: err.message || String(error),
-          stack: err.stack || 'No stack trace',
-          attribute: {
-            name: attribute.name,
-            type: attribute.type,
-            inputType: attribute.inputType,
-            hasValues: attribute.values ? attribute.values.length : 0
-          }
-        });
-        throw error;
-      }
-    }
-    
-    logger.debug("Successfully created all attributes", {
-      count: createdAttributes.length,
-    });
-    return [...(existingAttributes ?? []), ...createdAttributes];
+    return [...existingAttributes, ...newlyCreatedAttributes];
   }
 }

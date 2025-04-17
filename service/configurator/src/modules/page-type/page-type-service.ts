@@ -47,81 +47,61 @@ export class PageTypeService {
     return filteredIds;
   }
 
-  async bootstrapPageType(input: PageTypeInput) {
+  async bootstrapPageType(input: Pick<PageTypeInput, "name" | "attributes">) {
     logger.debug("Bootstrapping page type", {
       name: input.name,
       attributesCount: input.attributes.length,
     });
 
-    try {
-      const pageType = await this.getOrCreate(input.name);
+    const pageType = await this.getOrCreate(input.name);
 
-      logger.debug("Creating attributes for page type", {
+    // check if the page type has the attributes already
+    const attributesToCreate = input.attributes.filter(
+      (a) => !pageType.attributes?.some((attr) => attr.name === a.name)
+    );
+
+    logger.debug("Attributes to create", {
+      attributesToCreate,
+    });
+
+    const attributes = await this.attributeService.bootstrapAttributes({
+      attributeInputs: attributesToCreate.map((a) => ({
+        ...a,
+        type: "PAGE_TYPE",
+      })),
+    });
+
+    const attributeIds = attributes.map((attr) => attr.id);
+    const attributesToAssign = await this.filterOutAssignedAttributes(
+      pageType.id,
+      attributeIds
+    );
+
+    if (attributesToAssign.length > 0) {
+      logger.debug("Assigning attributes to page type", {
         pageType: input.name,
-        attributes: input.attributes.map((a: any) => a.name),
+        attributeCount: attributesToAssign.length,
       });
 
       try {
-        const attributes = await this.attributeService.bootstrapAttributes({
-          attributeInputs: input.attributes.map((a: any) => ({
-            ...a,
-            type: "PAGE_TYPE",
-          })),
+        await this.repository.assignAttributes(pageType.id, attributesToAssign);
+        logger.debug("Successfully assigned attributes to page type", {
+          name: input.name,
         });
-
-        const attributeIds = attributes.map((attr: any) => attr.id);
-        const attributesToAssign = await this.filterOutAssignedAttributes(
-          pageType.id,
-          attributeIds
-        );
-
-        if (attributesToAssign.length > 0) {
-          logger.debug("Assigning attributes to page type", {
-            pageType: input.name,
-            attributeCount: attributesToAssign.length,
-            attributeIds: attributesToAssign
-          });
-
-          try {
-            await this.repository.assignAttributes(pageType.id, attributesToAssign);
-            logger.debug("Successfully assigned attributes to page type", {
-              name: input.name,
-            });
-          } catch (error: unknown) {
-            const err = error as Error;
-            logger.error("Failed to assign attributes to page type", {
-              error: err.message || String(error),
-              stack: err.stack || 'No stack trace',
-              pageType: input.name,
-              attributeIds: attributesToAssign,
-            });
-            throw error;
-          }
-        } else {
-          logger.debug("No new attributes to assign to page type", {
-            name: input.name,
-          });
-        }
-
-        return pageType;
-      } catch (error: unknown) {
-        const err = error as Error;
-        logger.error("Failed to create or assign attributes for page type", {
-          error: err.message || String(error),
-          stack: err.stack || 'No stack trace',
-          pageTypeName: input.name,
-          attributes: input.attributes.map((a: any) => a.name)
+      } catch (error) {
+        logger.error("Failed to assign attributes to page type", {
+          error,
+          pageType: input.name,
+          attributeIds: attributesToAssign,
         });
         throw error;
       }
-    } catch (error: unknown) {
-      const err = error as Error;
-      logger.error("Failed to create or get page type", {
-        error: err.message || String(error),
-        stack: err.stack || 'No stack trace',
-        pageTypeName: input.name
+    } else {
+      logger.debug("No new attributes to assign to page type", {
+        name: input.name,
       });
-      throw error;
     }
+
+    return pageType;
   }
 }

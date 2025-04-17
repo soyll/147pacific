@@ -1,5 +1,6 @@
 import type { Client } from "@urql/core";
 import { graphql, type VariablesOf, type ResultOf } from "gql.tada";
+import { logger } from "../../lib/logger";
 
 const createPageTypeMutation = graphql(`
   mutation CreatePageType($input: PageTypeCreateInput!) {
@@ -56,8 +57,6 @@ const pageAttributeAssignMutation = graphql(`
   }
 `);
 
-type PageAttributeAssignInput = VariablesOf<typeof pageAttributeAssignMutation>;
-
 const getPageTypeQuery = graphql(`
   query GetPageType($id: ID!) {
     pageType(id: $id) {
@@ -90,12 +89,14 @@ export class PageTypeRepository implements PageTypeOperations {
     });
 
     if (!result.data?.pageTypeCreate?.pageType) {
-      const errors = result.data?.pageTypeCreate?.errors || result.error?.message || 'Unknown error';
-      const errorMessage = `Failed to create page type: ${JSON.stringify(errors)}`;
-      throw new Error(errorMessage);
+      throw new Error("Failed to create page type", result.error);
     }
 
-    return result.data?.pageTypeCreate?.pageType;
+    const pageType = result.data.pageTypeCreate.pageType;
+
+    logger.info("Page type created", { name: pageType.name });
+
+    return pageType;
   }
 
   async getPageTypeByName(name: string) {
@@ -121,9 +122,7 @@ export class PageTypeRepository implements PageTypeOperations {
     });
 
     if (!result.data?.pageAttributeAssign?.pageType) {
-      const errors = result.data?.pageAttributeAssign?.errors || result.error?.message || 'Unknown error';
-      const errorMessage = `Failed to assign attributes to page type: ${JSON.stringify(errors)}`;
-      throw new Error(errorMessage);
+      throw new Error("Failed to assign attributes to page type", result.error);
     }
 
     return result.data?.pageAttributeAssign?.pageType;

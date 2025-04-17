@@ -118,7 +118,7 @@ tilt up --web
 
 - Saleor Core (API) - http://localhost:8000
 - Saleor Dashboard - http://localhost:9000
-- Saleor Storefront - http://localhost:3000
+- Saleor Storefront - http://localhost:30080
 - Jaeger UI (APM) - http://localhost:16686
 - Mailpit (Test email interface) - http://localhost:8025
 - Payment Service - http://localhost:8001

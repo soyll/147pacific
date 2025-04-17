@@ -11,8 +11,8 @@
   "scripts": {
     "bootstrap": "tsx src/commands/bootstrap.ts",
     "retrieve": "tsx src/commands/retrieve.ts",
-    "fetch-schema": "echo \"Using schema provided by volume mount\" && exit 0",
-    "postinstall": "echo \"Skipping schema fetch in container build\" && exit 0",
+    "fetch-schema": "tsx src/lib/graphql/fetch-schema.ts",
+    "postinstall": "pnpm run fetch-schema",
     "test": "vitest"
   },
   "devDependencies": {

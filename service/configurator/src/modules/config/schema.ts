@@ -94,6 +94,7 @@ const channelSchema = z.object({
   currencyCode: z.string(),
   defaultCountry: countryCodeSchema,
   slug: z.string(),
+  isActive: z.boolean().optional().default(true),
   settings: z
     .object({
       allocationStrategy: z
@@ -154,6 +155,47 @@ const categorySchema: z.ZodType<Category> = baseCategorySchema.extend({
   subcategories: z.lazy(() => categorySchema.array()).optional(),
 });
 
+// Product attribute schema
+const productAttributeSchema = z.object({
+  attribute: z.string(),
+  values: z.array(z.string()),
+});
+
+// Product variant channel listing schema
+const variantChannelListingSchema = z.object({
+  channelSlug: z.string(),
+  price: z.string(),
+  costPrice: z.string().optional(),
+});
+
+// Product variant schema
+const productVariantSchema = z.object({
+  sku: z.string(),
+  name: z.string().optional(),
+  attributes: z.array(productAttributeSchema).optional(),
+  channelListings: z.array(variantChannelListingSchema).optional(),
+});
+
+// Product channel listing schema
+const productChannelListingSchema = z.object({
+  channelSlug: z.string(),
+  isPublished: z.boolean().optional(),
+  visibleInListings: z.boolean().optional(),
+  isAvailableForPurchase: z.boolean().optional(),
+  addVariants: z.boolean().optional(),
+});
+
+// Product schema
+const productSchema = z.object({
+  name: z.string(),
+  description: z.string().optional(),
+  productType: z.string(),
+  category: z.string().optional(),
+  attributes: z.array(productAttributeSchema).optional(),
+  channelListings: z.array(productChannelListingSchema).optional(),
+  variants: z.array(productVariantSchema).optional(),
+});
+
 export const configSchema = z
   .object({
     productTypes: z.array(pageOrProductTypeSchema).optional(),
@@ -161,6 +203,7 @@ export const configSchema = z
     pageTypes: z.array(pageOrProductTypeSchema).optional(),
     shop: shopSchema.optional(),
     categories: z.array(categorySchema).optional(),
+    products: z.array(productSchema).optional(),
   })
   .strict();
 
@@ -169,3 +212,4 @@ export type PageTypeAttribute = z.infer<typeof pageOrProductTypeSchema>;
 export type PageType = z.infer<typeof pageOrProductTypeSchema>;
 export type ProductTypeAttribute = z.infer<typeof pageOrProductTypeSchema>;
 export type ProductType = z.infer<typeof pageOrProductTypeSchema>;
+export type ProductInput = z.infer<typeof productSchema>;

@@ -22,6 +22,7 @@ const getChannelsQuery = graphql(`
     channels {
       id
       name
+      slug
     }
   }
 `);
@@ -29,6 +30,20 @@ const getChannelsQuery = graphql(`
 export type Channel = NonNullable<
   ResultOf<typeof getChannelsQuery>["channels"]
 >[number];
+
+const getChannelBySlugQuery = graphql(`
+  query GetChannelBySlug($slug: String!) {
+    channels(filter: { search: $slug }) {
+      id
+      name
+      slug
+      currencyCode
+      defaultCountry {
+        code
+      }
+    }
+  }
+`);
 
 const updateChannelMutation = graphql(`
   mutation UpdateChannel($id: ID!, $input: ChannelUpdateInput!) {
@@ -55,6 +70,7 @@ type ChannelUpdateInput = VariablesOf<typeof updateChannelMutation>["input"];
 export interface ChannelOperations {
   createChannel(input: ChannelCreateInput): Promise<Channel>;
   getChannels(): Promise<Channel[] | null | undefined>;
+  getChannelBySlug(slug: string): Promise<Channel | null | undefined>;
   updateChannel(
     id: string,
     input: ChannelUpdateInput
@@ -83,6 +99,44 @@ export class ChannelRepository implements ChannelOperations {
   async getChannels() {
     const result = await this.client.query(getChannelsQuery, {});
     return result.data?.channels;
+  }
+
+  async getChannelBySlug(slug: string) {
+    try {
+      logger.info(`Executing getChannelBySlug query for slug: ${slug}`);
+      const result = await this.client.query(getChannelBySlugQuery, { slug });
+      const channels = result.data?.channels;
+      
+      if (!channels || channels.length === 0) {
+        logger.warn(`No channels found matching slug: ${slug}`);
+        return null;
+      }
+      
+      // Find exact match by slug
+      const exactMatch = channels.find(channel => channel.slug === slug);
+      if (exactMatch) {
+        logger.info(`Found exact match for channel slug: ${slug}`, {
+          id: exactMatch.id,
+          name: exactMatch.name,
+          slug: exactMatch.slug
+        });
+        return exactMatch;
+      }
+      
+      // Return the first result if no exact match (search is approximate)
+      logger.info(`No exact match for slug: ${slug}, using approximate match`, {
+        id: channels[0].id,
+        name: channels[0].name,
+        slug: channels[0].slug
+      });
+      return channels[0];
+    } catch (error) {
+      logger.error("Failed to get channel by slug", {
+        slug,
+        error: error instanceof Error ? error.message : "Unknown error",
+      });
+      return null;
+    }
   }
 
   async updateChannel(id: string, input: ChannelUpdateInput) {

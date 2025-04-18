@@ -1,0 +1,183 @@
+shop:
+  customerAllowedToSetExternalReference: false
+  defaultMailSenderName: "Cannatech Store"
+  defaultMailSenderAddress: "orders@cannatech.com"
+  displayGrossPrices: true
+  enableAccountConfirmationByEmail: true
+  limitQuantityPerCheckout: 50
+  trackInventoryByDefault: true
+  reserveStockDurationAnonymousUser: 60
+  reserveStockDurationAuthenticatedUser: 120
+  defaultDigitalMaxDownloads: 5
+  defaultDigitalUrlValidDays: 30
+  defaultWeightUnit: "G"
+  allowLoginWithoutConfirmation: false
+
+channels:
+  - name: Online Store
+    currencyCode: "USD"
+    defaultCountry: "US"
+    slug: "online-store"
+    settings:
+      allocationStrategy: "PRIORITIZE_SORTING_ORDER"
+      automaticallyConfirmAllNewOrders: true
+      automaticallyFulfillNonShippableGiftCard: true
+      expireOrdersAfter: 30
+      allowUnpaidOrders: false
+  
+  - name: Dispensary Pickup
+    currencyCode: "USD"
+    defaultCountry: "US"
+    slug: "dispensary-pickup"
+    settings:
+      allocationStrategy: "PRIORITIZE_HIGH_STOCK"
+      automaticallyConfirmAllNewOrders: true
+      automaticallyFulfillNonShippableGiftCard: true
+      expireOrdersAfter: 48
+      allowUnpaidOrders: true
+
+productTypes:
+  - name: Cannabis Flower
+    attributes:
+      - name: Flower Strain
+        inputType: "DROPDOWN"
+        values:
+          - name: Indica
+          - name: Sativa
+          - name: Hybrid
+          - name: High CBD
+      - name: Flower THC Content
+        inputType: "DROPDOWN"
+        values:
+          - name: 5-10%
+          - name: 10-15%
+          - name: 15-20%
+          - name: 20-25%
+          - name: 25-30%
+          - name: 30%+
+      - name: Flower CBD Content
+        inputType: "DROPDOWN"
+        values:
+          - name: <1%
+          - name: 1-5%
+          - name: 5-10%
+          - name: 10-15%
+          - name: 15%+
+
+  - name: Cannabis Edibles
+    attributes:
+      - name: Edible Type
+        inputType: "DROPDOWN"
+        values:
+          - name: Gummies
+          - name: Chocolate
+          - name: Baked Goods
+          - name: Beverages
+      - name: Edible THC Per Serving
+        inputType: "DROPDOWN"
+        values:
+          - name: 2.5mg
+          - name: 5mg
+          - name: 10mg
+          - name: 20mg
+          - name: 50mg
+          - name: 100mg
+
+categories:
+  - name: Flower
+    subcategories:
+      - name: Indica
+      - name: Sativa
+      - name: Hybrid
+  - name: Edibles
+    subcategories:
+      - name: Gummies
+      - name: Chocolates
+      - name: Beverages
+  - name: Concentrates
+  - name: Accessories
+
+pageTypes:
+  - name: Blog Post
+    attributes:
+      - name: Blog Author
+        inputType: "PLAIN_TEXT"
+      - name: Blog PublishDate
+        inputType: "DATE"
+      - name: Blog Category
+        inputType: "DROPDOWN"
+        values:
+          - name: News
+          - name: Education
+          - name: Culture
+
+# Products section - comes after all the above requirements
+products:
+  # Example product with variants
+  - name: "Blue Dream"
+    description: "Blue Dream is a sativa-dominant hybrid originating in California. A potent cross between the iconic Blueberry and Haze strains, Blue Dream is a popular daytime medication for patients treating pain, depression, and nausea."
+    productType: "Cannabis Flower"
+    category: "Hybrid"
+    attributes:
+      - attribute: "Flower Strain"
+        values: ["Hybrid"]
+      - attribute: "Flower THC Content"
+        values: ["20-25%"]
+      - attribute: "Flower CBD Content"
+        values: ["<1%"]
+    channelListings:
+      - channelSlug: "online-store"
+        isPublished: true
+        visibleInListings: true
+      - channelSlug: "dispensary-pickup"
+        isPublished: true
+    variants:
+      - sku: "BD-3.5G"
+        name: "Blue Dream - 3.5g"
+        channelListings:
+          - channelSlug: "online-store"
+            price: "45.00"
+            costPrice: "25.00"
+          - channelSlug: "dispensary-pickup"
+            price: "40.00"
+            costPrice: "25.00"
+      - sku: "BD-7G"
+        name: "Blue Dream - 7g"
+        channelListings:
+          - channelSlug: "online-store"
+            price: "80.00"
+            costPrice: "45.00"
+          - channelSlug: "dispensary-pickup"
+            price: "75.00"
+            costPrice: "45.00"
+
+  # Example edible product
+  - name: "Chill Gummies"
+    description: "Delicious fruit-flavored gummies with precise THC dosing. Perfect for beginners and experienced users alike."
+    productType: "Cannabis Edibles"
+    category: "Gummies"
+    attributes:
+      - attribute: "Edible Type"
+        values: ["Gummies"]
+      - attribute: "Edible THC Per Serving"
+        values: ["10mg"]
+    channelListings:
+      - channelSlug: "online-store"
+        isPublished: true
+      - channelSlug: "dispensary-pickup"
+        isPublished: true
+    variants:
+      - sku: "GUMMY-MIXED-100MG"
+        name: "Chill Gummies - Mixed Fruit (10x10mg)"
+        channelListings:
+          - channelSlug: "online-store"
+            price: "25.00"
+          - channelSlug: "dispensary-pickup"
+            price: "22.00"
+      - sku: "GUMMY-BERRY-100MG"
+        name: "Chill Gummies - Berry Blast (10x10mg)"
+        channelListings:
+          - channelSlug: "online-store"
+            price: "25.00"
+          - channelSlug: "dispensary-pickup"
+            price: "22.00" 

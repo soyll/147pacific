@@ -25,6 +25,31 @@ export class ChannelService {
     return existingChannel;
   }
 
+  async getChannelBySlug(slug: string) {
+    logger.info("Looking up channel by slug", { slug });
+    try {
+      const channel = await this.repository.getChannelBySlug(slug);
+      
+      if (channel) {
+        logger.info("Found channel by slug", {
+          id: channel.id,
+          name: channel.name,
+          slug: channel.slug
+        });
+      } else {
+        logger.warn("Channel not found by slug", { slug });
+      }
+      
+      return channel;
+    } catch (error) {
+      logger.error("Error finding channel by slug", {
+        slug,
+        error: error instanceof Error ? error.message : "Unknown error",
+      });
+      return null;
+    }
+  }
+
   private async getOrCreate(input: ChannelInput) {
     logger.debug("Getting or creating channel", { name: input.name });
     const existingChannel = await this.getExistingChannel(input.name);

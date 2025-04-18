@@ -11,6 +11,8 @@ import { ConfigurationRepository } from "../modules/config/repository";
 import { YamlConfigurationManager } from "../modules/config/yaml-manager";
 import { PageTypeService } from "../modules/page-type/page-type-service";
 import { PageTypeRepository } from "../modules/page-type/repository";
+import { ProductService } from "../modules/product/product-service";
+import { ProductRepository } from "../modules/product/repository";
 import { ProductTypeService } from "../modules/product-type/product-type-service";
 import { ProductTypeRepository } from "../modules/product-type/repository";
 import { ShopService } from "../modules/shop/shop-service";
@@ -24,6 +26,7 @@ export interface ServiceContainer {
   readonly configuration: ConfigurationService;
   readonly configStorage: YamlConfigurationManager;
   readonly category: CategoryService;
+  readonly product: ProductService;
 }
 
 export class ServiceComposer {
@@ -37,6 +40,7 @@ export class ServiceComposer {
       shop: new ShopRepository(client),
       configuration: new ConfigurationRepository(client),
       category: new CategoryRepository(client),
+      product: new ProductRepository(client),
     } as const;
 
     logger.debug("Creating services");
@@ -47,17 +51,28 @@ export class ServiceComposer {
       configStorage
     );
 
+    const channelService = new ChannelService(repositories.channel);
+    const categoryService = new CategoryService(repositories.category);
+    const productTypeService = new ProductTypeService(
+      repositories.productType,
+      attributeService
+    );
+
     return {
-      channel: new ChannelService(repositories.channel),
+      channel: channelService,
       pageType: new PageTypeService(repositories.pageType, attributeService),
-      productType: new ProductTypeService(
-        repositories.productType,
-        attributeService
-      ),
+      productType: productTypeService,
       shop: new ShopService(repositories.shop),
       configuration: configurationService,
       configStorage,
-      category: new CategoryService(repositories.category),
+      category: categoryService,
+      product: new ProductService(
+        repositories.product,
+        productTypeService,
+        categoryService,
+        attributeService,
+        channelService
+      ),
     };
   }
 }

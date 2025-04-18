@@ -83,4 +83,33 @@ export class AttributeService {
 
     return [...existingAttributes, ...newlyCreatedAttributes];
   }
+
+  async getAttributeByName(name: string) {
+    try {
+      const attribute = await this.repository.getAttributeByName(name);
+      return attribute;
+    } catch (error) {
+      logger.error("Failed to get attribute by name", {
+        name,
+        error: error instanceof Error ? error.message : "Unknown error",
+      });
+      return null;
+    }
+  }
+
+  async getAttributesByNames(input: { names: string[], type?: string }) {
+    try {
+      const attributes = await this.repository.getAttributesByNames({
+        names: input.names,
+        type: input.type || null
+      });
+      return attributes;
+    } catch (error) {
+      logger.error("Failed to get attributes by names", {
+        names: input.names,
+        error: error instanceof Error ? error.message : "Unknown error",
+      });
+      return [];
+    }
+  }
 }

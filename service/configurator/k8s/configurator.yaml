@@ -30,7 +30,7 @@ spec:
         - name: SCHEMA_PATH
           value: "/app/schema/schema.graphql"
         - name: LOG_LEVEL
-          value: "error"
+          value: "info"
         - name: NODE_ENV
           value: "production"
         volumeMounts:
@@ -47,4 +47,4 @@ metadata:
   namespace: saleor
 type: Opaque
 stringData:
-  configurator-app-token: "N4HcYzW8zm9zC4NO4OKC4h3sWcroBV" 
+  configurator-app-token: "FaePwu8WhaDN3Zo087KPM4D66Xwte1" 

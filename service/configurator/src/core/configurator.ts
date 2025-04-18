@@ -59,10 +59,22 @@ export class SaleorConfigurator {
     }
 
     try {
+      // First execute all prerequisite tasks
       await Promise.all(bootstrapTasks);
-      logger.info("Bootstrap process completed successfully");
+      logger.info("Core bootstrap tasks completed successfully");
+
+      // Then process products if they exist (products depend on previous components)
+      if (config.products && config.products.length > 0) {
+        logger.debug(`Bootstrapping ${config.products.length} products`);
+        await this.services.product.bootstrapProducts(config.products);
+        logger.info("Product bootstrap completed successfully");
+      }
+
+      logger.info("Complete bootstrap process completed successfully");
     } catch (error) {
-      logger.error("Bootstrap process failed", { error });
+      logger.error("Bootstrap process failed", { 
+        error: error instanceof Error ? error.message : String(error) 
+      });
       throw error;
     }
   }
@@ -74,7 +86,9 @@ export class SaleorConfigurator {
       logger.info("Configuration retrieved successfully");
       return config;
     } catch (error) {
-      logger.error("Failed to retrieve configuration", { error });
+      logger.error("Failed to retrieve configuration", { 
+        error: error instanceof Error ? error.message : String(error) 
+      });
       throw error;
     }
   }

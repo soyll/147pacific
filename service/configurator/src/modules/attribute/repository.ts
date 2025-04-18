@@ -65,6 +65,33 @@ const getAttributesByNamesQuery = graphql(`
   }
 `);
 
+const getAttributeByNameQuery = graphql(`
+  query GetAttributeByName($name: String!, $type: AttributeTypeEnum) {
+    attributes(
+      first: 1
+      where: { name: { eq: $name }, type: { eq: $type } }
+    ) {
+      edges {
+        node {
+          id
+          name
+          type
+          inputType
+          entityType
+          choices(first: 100) {
+            edges {
+              node {
+                name
+                id
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+`);
+
 export type GetAttributesByNamesInput = VariablesOf<
   typeof getAttributesByNamesQuery
 >;
@@ -74,6 +101,10 @@ export interface AttributeOperations {
   getAttributesByNames(
     input: GetAttributesByNamesInput
   ): Promise<Attribute[] | null | undefined>;
+  getAttributeByName(
+    name: string,
+    type?: string
+  ): Promise<Attribute | null | undefined>;
 }
 
 export class AttributeRepository implements AttributeOperations {
@@ -106,5 +137,22 @@ export class AttributeRepository implements AttributeOperations {
     return result.data?.attributes?.edges?.map(
       (edge) => edge.node as Attribute
     );
+  }
+
+  async getAttributeByName(name: string, type?: string) {
+    try {
+      const result = await this.client.query(getAttributeByNameQuery, {
+        name,
+        type: type || null,
+      });
+
+      return result.data?.attributes?.edges?.[0]?.node as Attribute | null | undefined;
+    } catch (error) {
+      logger.error("Failed to get attribute by name", {
+        name,
+        error: error instanceof Error ? error.message : "Unknown error",
+      });
+      return null;
+    }
   }
 }

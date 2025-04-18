@@ -20,20 +20,32 @@ export class CategoryService {
       parentId,
     });
 
-    const category = await this.repository.createCategory(
-      {
+    // Generate a slug if not provided
+    const createInput = {
+      name: input.name,
+      slug: input.name.toLowerCase().replace(/\s+/g, '-'),
+    };
+
+    try {
+      const category = await this.repository.createCategory(
+        createInput,
+        parentId
+      );
+
+      logger.debug("Created category", {
+        id: category.id,
+        name: category.name,
+        parentId,
+      });
+
+      return category;
+    } catch (error) {
+      logger.error("Failed to create category", {
         name: input.name,
-      },
-      parentId
-    );
-
-    logger.debug("Created category", {
-      id: category.id,
-      name: category.name,
-      parentId,
-    });
-
-    return category;
+        error: error instanceof Error ? error.message : "Unknown error",
+      });
+      throw error;
+    }
   }
 
   async bootstrapCategories(categories: CategoryConfigInput[]) {
@@ -44,16 +56,33 @@ export class CategoryService {
     );
   }
 
-  private async getOrCreateCategory(
-    categoryInput: CategoryConfigInput
+  async getOrCreateCategory(
+    categoryInput: CategoryConfigInput | string
   ): Promise<Category> {
-    const existingCategory = await this.getExistingCategory(categoryInput.name);
+    // Handle both string and object inputs
+    const categoryName = typeof categoryInput === 'string' 
+      ? categoryInput 
+      : categoryInput.name;
+    
+    const categoryObject = typeof categoryInput === 'string'
+      ? { name: categoryInput }
+      : categoryInput;
 
-    if (existingCategory) {
-      return existingCategory;
+    try {
+      const existingCategory = await this.getExistingCategory(categoryName);
+
+      if (existingCategory) {
+        return existingCategory;
+      }
+
+      return this.createCategory(categoryObject);
+    } catch (error) {
+      logger.error("Failed to get or create category", {
+        name: categoryName,
+        error: error instanceof Error ? error.message : "Unknown error",
+      });
+      throw error;
     }
-
-    return this.createCategory(categoryInput);
   }
 
   private async bootstrapCategory(

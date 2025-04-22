@@ -50,48 +50,96 @@ export class ChannelService {
     }
   }
 
-  private async getOrCreate(input: ChannelInput) {
-    logger.debug("Getting or creating channel", { name: input.name });
-    const existingChannel = await this.getExistingChannel(input.name);
+  async getOrCreate(input: ChannelInput): Promise<Channel> {
+    const { slug } = input;
+    logger.info("Getting or creating channel", { slug });
+
+    const existingChannel = await this.repository.getChannelBySlug(slug);
 
     if (existingChannel) {
-      logger.debug("Updating existing channel", {
-        id: existingChannel.id,
-        name: input.name,
+      logger.info("Found existing channel", { 
+        id: existingChannel.id, 
+        name: existingChannel.name,
+        slug: existingChannel.slug,
+        isActive: existingChannel.isActive
       });
+      
+      // If the channel exists but is not active, activate it
+      if (!existingChannel.isActive) {
+        logger.info("Channel exists but is inactive. Activating channel", { 
+          id: existingChannel.id, 
+          slug: existingChannel.slug 
+        });
+        
+        try {
+          await this.repository.activateChannel(existingChannel.id);
+          logger.info("Successfully activated existing channel", { 
+            id: existingChannel.id, 
+            slug: existingChannel.slug 
+          });
+        } catch (error) {
+          logger.error("Failed to activate existing channel", { 
+            id: existingChannel.id, 
+            slug: existingChannel.slug,
+            error: error instanceof Error ? error.message : "Unknown error"
+          });
+        }
+      }
+      
       return this.updateChannel(existingChannel.id, input);
     }
 
-    logger.debug("Creating new channel", { name: input.name });
+    logger.info("Channel not found, creating new one", { slug });
+
     try {
+      // Create the channel with isActive flag
       const channel = await this.repository.createChannel({
         name: input.name,
         slug: input.slug,
         currencyCode: input.currencyCode,
         defaultCountry: input.defaultCountry,
+        isActive: input.isActive ?? true
       });
-      logger.debug("Successfully created channel", {
+
+      // Ensure the channel is activated even if isActive was set
+      try {
+        logger.info("Activating newly created channel", { id: channel.id, slug: channel.slug });
+        await this.repository.activateChannel(channel.id);
+        logger.info("Successfully activated new channel", { id: channel.id, slug: channel.slug });
+      } catch (error) {
+        logger.error("Failed to activate new channel", { 
+          id: channel.id, 
+          slug: channel.slug,
+          error: error instanceof Error ? error.message : "Unknown error"
+        });
+      }
+
+      logger.info("Channel created successfully", {
         id: channel.id,
-        name: input.name,
+        name: channel.name,
+        slug: channel.slug,
+        isActive: true
       });
+
       return channel;
     } catch (error) {
       logger.error("Failed to create channel", {
+        slug,
         error: error instanceof Error ? error.message : "Unknown error",
-        name: input.name,
       });
       throw error;
     }
   }
 
   private async updateChannel(id: string, input: ChannelInput) {
-    logger.debug("Preparing channel update", { id, name: input.name });
+    logger.info("Preparing channel update", { id, name: input.name, slug: input.slug });
     const settings = input.settings ?? {};
 
     const updateInput = object.filterUndefinedValues({
       name: input.name,
       slug: input.slug,
       defaultCountry: input.defaultCountry,
+      isActive: input.isActive,
       orderSettings:
         Object.keys(settings).length > 0
           ? object.filterUndefinedValues({
@@ -127,9 +175,11 @@ export class ChannelService {
         : undefined,
     });
 
-    logger.debug("Updating channel", {
+    logger.info("Updating channel", {
       id,
       name: input.name,
+      slug: input.slug,
+      isActive: input.isActive,
       hasOrderSettings: !!updateInput.orderSettings,
       hasCheckoutSettings: !!updateInput.checkoutSettings,
       hasPaymentSettings: !!updateInput.paymentSettings,
@@ -141,9 +191,11 @@ export class ChannelService {
         id,
         updateInput
       );
-      logger.debug("Successfully updated channel", {
+      logger.info("Successfully updated channel", {
         id,
-        name: input.name,
+        name: updatedChannel?.name,
+        slug: updatedChannel?.slug,
+        isActive: updatedChannel?.isActive
       });
       return updatedChannel;
     } catch (error) {
@@ -151,25 +203,40 @@ export class ChannelService {
         error: error instanceof Error ? error.message : "Unknown error",
         id,
         name: input.name,
+        slug: input.slug,
+        isActive: input.isActive
       });
       throw error;
     }
   }
 
   async bootstrapChannels(inputs: ChannelInput[]) {
-    logger.debug("Bootstrapping channels", { count: inputs.length });
+    logger.info("Bootstrapping channels", { 
+      count: inputs.length,
+      channelSlugs: inputs.map(input => input.slug)
+    });
+    
     try {
       const channels = await Promise.all(
         inputs.map((input) => this.getOrCreate(input))
       );
-      logger.debug("Successfully bootstrapped all channels", {
+      
+      logger.info("Successfully bootstrapped all channels", {
         count: channels.length,
+        channelDetails: channels.map(channel => ({
+          id: channel.id,
+          name: channel.name,
+          slug: channel.slug,
+          isActive: channel.isActive
+        }))
       });
+      
       return channels;
     } catch (error) {
       logger.error("Failed to bootstrap channels", {
         error: error instanceof Error ? error.message : "Unknown error",
         count: inputs.length,
+        channelSlugs: inputs.map(input => input.slug)
       });
       throw error;
     }

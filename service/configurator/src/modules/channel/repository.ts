@@ -8,6 +8,13 @@ const createChannelMutation = graphql(`
       channel {
         id
         name
+        slug
+        isActive
+      }
+      errors {
+        field
+        message
+        code
       }
     }
   }
@@ -23,6 +30,11 @@ const getChannelsQuery = graphql(`
       id
       name
       slug
+      isActive
+      currencyCode
+      defaultCountry {
+        code
+      }
     }
   }
 `);
@@ -52,6 +64,7 @@ const updateChannelMutation = graphql(`
         id
         name
         slug
+        isActive
         currencyCode
         defaultCountry {
           code
@@ -75,25 +88,116 @@ export interface ChannelOperations {
     id: string,
     input: ChannelUpdateInput
   ): Promise<Channel | null | undefined>;
+  activateChannel(id: string): Promise<Channel | null | undefined>;
 }
 
 export class ChannelRepository implements ChannelOperations {
   constructor(private client: Client) {}
 
   async createChannel(input: ChannelCreateInput) {
-    const result = await this.client.mutation(createChannelMutation, {
-      input,
-    });
+    try {
+      logger.info("Creating channel", { 
+        name: input.name, 
+        slug: input.slug,
+        isActive: input.isActive ?? true
+      });
+      
+      const result = await this.client.mutation(createChannelMutation, {
+        input,
+      });
 
-    if (!result.data?.channelCreate?.channel) {
-      throw new Error("Failed to create channel", result.error);
+      if (result.error) {
+        logger.error("GraphQL error creating channel", { 
+          error: result.error,
+          name: input.name,
+          slug: input.slug
+        });
+        throw new Error(`Failed to create channel: ${result.error.message}`);
+      }
+
+      if (!result.data?.channelCreate?.channel) {
+        const errors = result.data?.channelCreate?.errors;
+        if (errors && errors.length > 0) {
+          logger.error("API error creating channel", { 
+            errors,
+            name: input.name,
+            slug: input.slug
+          });
+          throw new Error(`Failed to create channel: ${errors.map(e => e.message).join(", ")}`);
+        }
+        
+        throw new Error("Failed to create channel: No channel returned and no error provided");
+      }
+
+      const channel = result.data.channelCreate.channel;
+
+      logger.info("Channel created successfully", { 
+        id: channel.id,
+        name: channel.name,
+        slug: input.slug
+      });
+
+      return channel;
+    } catch (error) {
+      logger.error("Exception creating channel", {
+        name: input.name,
+        slug: input.slug,
+        error: error instanceof Error ? error.message : "Unknown error"
+      });
+      throw error;
     }
+  }
 
-    const channel = result.data.channelCreate.channel;
+  async activateChannel(id: string) {
+    logger.info("Activating channel", { id });
+    
+    try {
+      const result = await this.client.mutation(`
+        mutation ChannelActivate($id: ID!) {
+          channelActivate(id: $id) {
+            channel {
+              id
+              name
+              slug
+              isActive
+            }
+            errors {
+              field
+              message
+              code
+            }
+          }
+        }
+      `, { id });
 
-    logger.info("Channel created", { channel });
+      if (result.error) {
+        logger.error("Failed to activate channel", { 
+          id, 
+          error: result.error
+        });
+        throw new Error(`Failed to activate channel: ${result.error.message}`);
+      }
 
-    return channel;
+      if (result.data?.channelActivate?.errors?.length) {
+        logger.error("Failed to activate channel", {
+          id,
+          errors: result.data.channelActivate.errors
+        });
+        throw new Error(`Failed to activate channel: ${result.data.channelActivate.errors.map(e => e.message).join(", ")}`);
+      }
+
+      logger.info("Channel activated successfully", { 
+        channel: result.data?.channelActivate?.channel 
+      });
+      
+      return result.data?.channelActivate?.channel;
+    } catch (error) {
+      logger.error("Exception activating channel", {
+        id,
+        error: error instanceof Error ? error.message : "Unknown error",
+      });
+      throw error;
+    }
   }
 
   async getChannels() {
@@ -103,33 +207,35 @@ export class ChannelRepository implements ChannelOperations {
 
   async getChannelBySlug(slug: string) {
     try {
-      logger.info(`Executing getChannelBySlug query for slug: ${slug}`);
-      const result = await this.client.query(getChannelBySlugQuery, { slug });
+      logger.info(`Looking for channel with slug: ${slug}`);
+      
+      // Directly get all channels
+      logger.info(`Fetching all channels to find slug: ${slug}`);
+      const result = await this.client.query(getChannelsQuery, {});
       const channels = result.data?.channels;
       
       if (!channels || channels.length === 0) {
-        logger.warn(`No channels found matching slug: ${slug}`);
+        logger.warn(`No channels found in the system`);
         return null;
       }
       
+      logger.info(`Found ${channels.length} channels, searching for slug: ${slug}`);
+      
       // Find exact match by slug
       const exactMatch = channels.find(channel => channel.slug === slug);
+      
       if (exactMatch) {
-        logger.info(`Found exact match for channel slug: ${slug}`, {
+        logger.info(`Found channel with slug: ${slug}`, {
           id: exactMatch.id,
           name: exactMatch.name,
-          slug: exactMatch.slug
+          slug: exactMatch.slug,
+          isActive: exactMatch.isActive
         });
         return exactMatch;
       }
       
-      // Return the first result if no exact match (search is approximate)
-      logger.info(`No exact match for slug: ${slug}, using approximate match`, {
-        id: channels[0].id,
-        name: channels[0].name,
-        slug: channels[0].slug
-      });
-      return channels[0];
+      logger.warn(`No channel found with slug: ${slug}`);
+      return null;
     } catch (error) {
       logger.error("Failed to get channel by slug", {
         slug,

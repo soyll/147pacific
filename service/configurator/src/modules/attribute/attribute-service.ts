@@ -73,15 +73,24 @@ export class AttributeService {
       count: attributesToCreate.length,
     });
 
-    const newlyCreatedAttributes = await Promise.all(
-      attributesToCreate.map((attribute) => {
+    const results = [];
+    // Create attributes one by one to better handle errors
+    for (const attribute of attributesToCreate) {
+      try {
         const attributeInput = createAttributeInput(attribute);
         logger.debug("Creating attribute", { name: attributeInput.name });
-        return this.repository.createAttribute(attributeInput);
-      })
-    );
+        const newAttribute = await this.repository.createAttribute(attributeInput);
+        results.push(newAttribute);
+      } catch (error) {
+        logger.error("Failed to create attribute", {
+          name: attribute.name,
+          error: error instanceof Error ? error.message : "Unknown error",
+        });
+        // Continue with other attributes instead of stopping the entire process
+      }
+    }
 
-    return [...existingAttributes, ...newlyCreatedAttributes];
+    return [...existingAttributes, ...results];
   }
 
   async getAttributeByName(name: string) {

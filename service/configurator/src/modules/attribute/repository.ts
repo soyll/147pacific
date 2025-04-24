@@ -113,19 +113,74 @@ export class AttributeRepository implements AttributeOperations {
   async createAttribute(
     attributeInput: AttributeCreateInput
   ): Promise<Attribute> {
-    const result = await this.client.mutation(createAttributeMutation, {
-      input: attributeInput,
-    });
+    try {
+      const result = await this.client.mutation(createAttributeMutation, {
+        input: attributeInput,
+      });
 
-    if (!result.data?.attributeCreate?.attribute) {
-      throw new Error("Failed to create attribute");
+      if (result.error) {
+        logger.error("GraphQL error creating attribute", {
+          name: attributeInput.name,
+          error: result.error.message,
+          graphQLErrors: result.error.graphQLErrors?.map((e: any) => e.message).join(", ") || "None"
+        });
+        throw new Error(`Failed to create attribute: ${result.error.message}`);
+      }
+
+      if (result.data?.attributeCreate?.errors && result.data.attributeCreate.errors.length > 0) {
+        const errors = result.data.attributeCreate.errors;
+        logger.error("Errors returned when creating attribute", {
+          name: attributeInput.name,
+          errors: errors.map((e: any) => `${e.field || 'general'}: ${e.message}`).join(", ")
+        });
+        
+        // Check if this is a duplicate attribute (common error)
+        const isDuplicate = errors.some((e: any) => 
+          e.message.includes("already exists") || 
+          e.message.includes("duplicate")
+        );
+        
+        if (isDuplicate) {
+          // If it's a duplicate, try to fetch the existing attribute instead of failing
+          logger.info("Attribute appears to be a duplicate, trying to fetch existing one", {
+            name: attributeInput.name
+          });
+          
+          const existingAttribute = await this.getAttributeByName(attributeInput.name, attributeInput.type);
+          if (existingAttribute) {
+            logger.info("Found existing attribute instead of creating new one", {
+              name: existingAttribute.name,
+              id: existingAttribute.id
+            });
+            return existingAttribute;
+          }
+        }
+        
+        throw new Error(`Failed to create attribute: ${errors.map((e: any) => `${e.field}: ${e.message}`).join(', ')}`);
+      }
+
+      if (!result.data?.attributeCreate?.attribute) {
+        logger.error("No attribute data returned", {
+          name: attributeInput.name
+        });
+        throw new Error("Failed to create attribute: No data returned");
+      }
+
+      logger.info("Attribute created", {
+        name: result.data.attributeCreate.attribute.name,
+      });
+
+      return result.data.attributeCreate.attribute as Attribute;
+    } catch (error) {
+      // If we get here, it's an unexpected error not handled above
+      logger.error("Exception creating attribute", {
+        name: attributeInput.name,
+        error: error instanceof Error ? error.message : "Unknown error"
+      });
+      
+      // Rethrow the error so the caller knows something failed
+      throw error;
     }
-
-    logger.info("Attribute created", {
-      name: result.data.attributeCreate.attribute.name,
-    });
-
-    return result.data.attributeCreate.attribute as Attribute;
   }
 
   async getAttributesByNames(input: GetAttributesByNamesInput) {

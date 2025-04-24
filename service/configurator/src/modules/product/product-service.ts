@@ -175,11 +175,17 @@ export class ProductService {
 
         logger.info(`Found channel for ${listing.channelSlug}`, { channelId: channel.id });
         
+        const isPublished = listing.isPublished ?? true;
+        const now = new Date().toISOString();
+        
         updateChannels.push({
           channelId: channel.id,
-          isPublished: listing.isPublished ?? true,
+          isPublished: isPublished,
           visibleInListings: listing.visibleInListings ?? true,
           isAvailableForPurchase: listing.isAvailableForPurchase ?? true,
+          // Always include publishedAt and availableForPurchaseAt with proper date values
+          publishedAt: now,
+          availableForPurchaseAt: now
         });
       } catch (error) {
         logger.error("Failed to get channel", {
@@ -194,16 +200,18 @@ export class ProductService {
       return;
     }
 
+    const channelListingInput = {
+      updateChannels: updateChannels
+    };
+
     try {
-      const channelListingInput = {
-        updateChannels: updateChannels
-      };
-      
       logger.info("Sending product channel listing update", { 
         productId,
         channels: updateChannels.map(c => ({ 
           channelId: c.channelId,
-          isPublished: c.isPublished
+          isPublished: c.isPublished,
+          publishedAt: c.publishedAt,
+          availableForPurchaseAt: c.availableForPurchaseAt
         }))
       });
 
@@ -234,9 +242,21 @@ export class ProductService {
         price: string;
         costPrice?: string;
       }>;
-    }>
+    }>,
+    isUpdate = false
   ) {
     if (!variants || variants.length === 0) return;
+
+    // If we're updating an existing product, check if variants already exist
+    // For now, simply log and return to avoid trying to create duplicates
+    if (isUpdate) {
+      logger.info(`Skipping variant creation for existing product ${productId} to avoid duplicate SKUs`);
+      
+      // Here we could implement variant updates if needed in the future
+      // For example, fetch existing variants by SKU and update their attributes or other fields
+      
+      return;
+    }
 
     const preparedVariants = [];
 
@@ -312,12 +332,44 @@ export class ProductService {
       const existingProduct = await this.repository.getProductByName(input.name);
 
       if (existingProduct) {
-        // Logic to update existing product would go here
-        logger.debug("Product already exists, would update if implemented", {
+        logger.info("Product already exists, updating", {
           id: existingProduct.id,
           name: existingProduct.name,
         });
-        return existingProduct;
+
+        // Get category ID (optional)
+        const categoryId = input.category
+          ? await this.getCategoryId(input.category)
+          : null;
+
+        // Prepare product attributes
+        const attributes = await this.prepareAttributes(input.attributes);
+
+        // Update product details - note: productType field is excluded since it can't be changed
+        const productInput = {
+          name: input.name,
+          description: this.formatDescription(input.description),
+          category: categoryId ? categoryId : undefined,
+          attributes: attributes,
+        };
+
+        // Update the product
+        const updatedProduct = await this.repository.updateProduct(existingProduct.id, productInput);
+        
+        // Update channel listings
+        await this.prepareChannelListings(existingProduct.id, input.channelListings);
+
+        // Update/create variants if provided
+        if (input.variants && input.variants.length > 0) {
+          await this.prepareVariants(existingProduct.id, input.variants, true);
+        }
+
+        logger.info("Successfully updated product", {
+          id: existingProduct.id,
+          name: updatedProduct.name
+        });
+
+        return updatedProduct;
       }
 
       logger.debug("Creating new product", { name: input.name });
@@ -349,7 +401,7 @@ export class ProductService {
       await this.prepareChannelListings(createdProduct.id, input.channelListings);
 
       // Create variants
-      await this.prepareVariants(createdProduct.id, input.variants);
+      await this.prepareVariants(createdProduct.id, input.variants, false);
 
       return createdProduct;
     } catch (error) {

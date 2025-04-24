@@ -1,9 +1,8 @@
 import { object } from "../../lib/utils/object";
 import type { SaleorConfig } from "../config/schema";
-import type { ChannelOperations } from "./repository";
+import type { ChannelOperations, Channel } from "./repository";
 import { logger } from "../../lib/logger";
-
-type ChannelInput = NonNullable<SaleorConfig["channels"]>[number];
+import type { ChannelInput } from "../config/schema";
 
 export class ChannelService {
   constructor(private repository: ChannelOperations) {}
@@ -25,26 +24,24 @@ export class ChannelService {
     return existingChannel;
   }
 
-  async getChannelBySlug(slug: string) {
-    logger.info("Looking up channel by slug", { slug });
+  async getChannelBySlug(slug: string): Promise<Channel | null | undefined> {
     try {
+      logger.info(`Looking for channel with slug: ${slug}`);
       const channel = await this.repository.getChannelBySlug(slug);
-      
       if (channel) {
-        logger.info("Found channel by slug", {
+        logger.info(`Found channel by slug`, {
           id: channel.id,
           name: channel.name,
           slug: channel.slug
         });
       } else {
-        logger.warn("Channel not found by slug", { slug });
+        logger.info(`Channel with slug ${slug} not found`);
       }
-      
       return channel;
     } catch (error) {
-      logger.error("Error finding channel by slug", {
+      logger.error("Failed to get channel by slug", {
         slug,
-        error: error instanceof Error ? error.message : "Unknown error",
+        error: error instanceof Error ? error.message : "Unknown error"
       });
       return null;
     }
@@ -78,11 +75,20 @@ export class ChannelService {
             slug: existingChannel.slug 
           });
         } catch (error) {
-          logger.error("Failed to activate existing channel", { 
-            id: existingChannel.id, 
-            slug: existingChannel.slug,
-            error: error instanceof Error ? error.message : "Unknown error"
-          });
+          // Check if this is "already activated" error - which is fine
+          const errorMessage = error instanceof Error ? error.message : "Unknown error";
+          if (errorMessage.includes("already activated")) {
+            logger.info("Channel is already active, continuing", { 
+              id: existingChannel.id, 
+              slug: existingChannel.slug 
+            });
+          } else {
+            logger.error("Failed to activate existing channel", { 
+              id: existingChannel.id, 
+              slug: existingChannel.slug,
+              error: errorMessage
+            });
+          }
         }
       }
       
@@ -107,11 +113,19 @@ export class ChannelService {
         await this.repository.activateChannel(channel.id);
         logger.info("Successfully activated new channel", { id: channel.id, slug: channel.slug });
       } catch (error) {
-        logger.error("Failed to activate new channel", { 
-          id: channel.id, 
-          slug: channel.slug,
-          error: error instanceof Error ? error.message : "Unknown error"
-        });
+        const errorMessage = error instanceof Error ? error.message : "Unknown error";
+        if (errorMessage.includes("already activated")) {
+          logger.info("Channel is already active, continuing", { 
+            id: channel.id, 
+            slug: channel.slug 
+          });
+        } else {
+          logger.error("Failed to activate new channel", { 
+            id: channel.id, 
+            slug: channel.slug,
+            error: errorMessage
+          });
+        }
       }
 
       logger.info("Channel created successfully", {

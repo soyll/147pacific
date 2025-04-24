@@ -209,8 +209,6 @@ export class ChannelRepository implements ChannelOperations {
     try {
       logger.info(`Looking for channel with slug: ${slug}`);
       
-      // Directly get all channels
-      logger.info(`Fetching all channels to find slug: ${slug}`);
       const result = await this.client.query(getChannelsQuery, {});
       const channels = result.data?.channels;
       
@@ -221,7 +219,6 @@ export class ChannelRepository implements ChannelOperations {
       
       logger.info(`Found ${channels.length} channels, searching for slug: ${slug}`);
       
-      // Find exact match by slug
       const exactMatch = channels.find(channel => channel.slug === slug);
       
       if (exactMatch) {

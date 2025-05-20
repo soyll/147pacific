@@ -45,6 +45,43 @@ check_docker() {
     fi
 }
 
+# Check if jq is installed
+check_jq() {
+    if ! command -v jq &> /dev/null; then
+        echo "❌ jq not found"
+        if [ "$OS" = "Darwin" ]; then
+            echo "🔄 Installing jq for Mac..."
+            if ! command -v brew &> /dev/null; then
+                echo "❌ Homebrew is required but not installed"
+                echo "Please install Homebrew first and try again"
+                exit 1
+            fi
+            brew install jq
+        elif [ "$OS" = "Linux" ]; then
+            echo "🔄 Installing jq for Linux..."
+            if command -v apt-get &> /dev/null; then
+                sudo apt-get update
+                sudo apt-get install -y jq
+            elif command -v yum &> /dev/null; then
+                sudo yum install -y jq
+            elif command -v dnf &> /dev/null; then
+                sudo dnf install -y jq
+            else
+                echo "⚠️ Unable to determine package manager. Please install jq manually:"
+                echo "https://stedolan.github.io/jq/download/"
+                exit 1
+            fi
+        else
+            echo "⚠️ Please install jq manually from https://stedolan.github.io/jq/download/"
+            exit 1
+        fi
+    else
+        echo "✅ jq is installed"
+        jq_version=$(jq --version)
+        echo "📦 jq version: $jq_version"
+    fi
+}
+
 # Check if Tilt is installed
 check_tilt() {
     if ! command -v tilt &> /dev/null; then
@@ -107,6 +144,7 @@ main() {
     check_docker
     check_tilt
     check_kubernetes
+    check_jq
     
     echo "🔧 Setting up environment..."
     pull_images

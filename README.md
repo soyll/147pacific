@@ -40,6 +40,14 @@ This repository provides the easiest way to start local development with all the
 
 ## Initial Setup
 
+### Requirements
+
+- **macOS/Linux**: Supported natively
+- **Windows**: WSL (Windows Subsystem for Linux) is required. Please install and configure WSL2 before proceeding with installation.
+  - [WSL Installation Guide](https://docs.microsoft.com/en-us/windows/wsl/install)
+  - Use Ubuntu or Debian as your WSL distribution for best compatibility
+  - All commands should be run from within your WSL terminal, not PowerShell or CMD
+
 ### Option 1: Using Installation Script (Recommended)
 
 1. Clone the repository:
@@ -61,6 +69,7 @@ The script will automatically check and install all requirements, including:
 - Docker Desktop
 - Tilt
 - Kubernetes setup
+- jq (JSON processor)
 - Required Docker images
 
 ### Option 2: Manual Installation
@@ -81,7 +90,12 @@ First, ensure you have the following requirements:
    - Windows: `scoop install tilt`
    - Linux: `curl -fsSL https://raw.githubusercontent.com/tilt-dev/tilt/master/scripts/install.sh | bash`
 
-3. Kubernetes
+3. [jq](https://stedolan.github.io/jq/download/) - JSON processor used in scripts
+   - macOS: `brew install jq`
+   - Ubuntu/Debian: `apt-get install jq`
+   - Windows: `scoop install jq` or download from the official website
+
+4. Kubernetes
    - Enabled in Docker Desktop
    - No additional installation needed
 

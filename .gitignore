@@ -40,6 +40,8 @@ out/
 build/
 dist/
 .vercel/
+.cursor/
+.cursorrules
 .turbo/
 next-env.d.ts
 *.tsbuildinfo

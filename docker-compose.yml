@@ -20,7 +20,6 @@ services:
       - DASHBOARD_URL=http://localhost:9000/
       - ALLOWED_HOSTS=*,localhost,host.docker.internal,127.0.0.1,api,${DOMAIN:-localhost}
       - STOREFRONT_URL=http://localhost:3000/
-      - DASHBOARD_URL=http://localhost:9000/
 
   dashboard:
     image: ghcr.io/saleor/saleor-dashboard:latest

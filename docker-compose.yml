@@ -24,7 +24,7 @@ services:
   dashboard:
     image: ghcr.io/saleor/saleor-dashboard:latest
     ports:
-      - 9000:8080
+      - 9000:80
     restart: unless-stopped
     networks:
       - saleor-network
@@ -134,7 +134,7 @@ services:
       context: ./frontend/storefront
       dockerfile: Dockerfile
     ports:
-      - 3000:8080
+      - 3000:80
     restart: unless-stopped
     networks:
       - saleor-network

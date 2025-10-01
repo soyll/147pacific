@@ -196,6 +196,25 @@ const productSchema = z.object({
   variants: z.array(productVariantSchema).optional(),
 });
 
+// Color scheme schema
+const colorSchemeSchema = z.object({
+  name: z.string(),
+  displayName: z.string(),
+  description: z.string(),
+});
+
+// Car brand schema
+const carModelSchema = z.object({
+  name: z.string(),
+  years: z.array(z.string()),
+  modifications: z.array(z.string()),
+});
+
+const carBrandSchema = z.object({
+  name: z.string(),
+  models: z.array(carModelSchema),
+});
+
 export const configSchema = z
   .object({
     productTypes: z.array(pageOrProductTypeSchema).optional(),
@@ -204,6 +223,8 @@ export const configSchema = z
     shop: shopSchema.optional(),
     categories: z.array(categorySchema).optional(),
     products: z.array(productSchema).optional(),
+    colorSchemes: z.array(colorSchemeSchema).optional(),
+    carBrands: z.array(carBrandSchema).optional(),
   })
   .strict();
 

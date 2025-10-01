@@ -1,5 +1,6 @@
 import { logger } from "../lib/logger";
 import type { ServiceContainer } from "./service-container";
+import { authenticate } from "../lib/graphql/client";
 
 /**
  * @description Parsing the configuration and triggering the commands.
@@ -9,6 +10,17 @@ export class SaleorConfigurator {
 
   async bootstrap() {
     logger.debug("Starting bootstrap process");
+    
+    // Authenticate first
+    logger.debug("Authenticating with Saleor API");
+    try {
+      await authenticate();
+      logger.debug("Authentication successful");
+    } catch (error) {
+      logger.error("Authentication failed", { error });
+      throw error;
+    }
+    
     const config = await this.services.configStorage.load();
     logger.debug("Configuration loaded", { config });
 

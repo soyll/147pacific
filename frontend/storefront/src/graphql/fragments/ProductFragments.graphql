@@ -1,0 +1,273 @@
+# Product fragments for auto accessories
+
+fragment ProductBasicInfo on Product {
+  id
+  name
+  slug
+  description
+  seoTitle
+  seoDescription
+  isAvailable
+  isPublished
+  created
+  updatedAt
+}
+
+fragment ProductMedia on ProductMedia {
+  id
+  url
+  alt
+  type
+  sortOrder
+}
+
+fragment ProductThumbnail on Image {
+  url
+  alt
+}
+
+fragment ProductPricing on ProductPricing {
+  priceRange {
+    start {
+      gross {
+        amount
+        currency
+      }
+      net {
+        amount
+        currency
+      }
+    }
+    stop {
+      gross {
+        amount
+        currency
+      }
+      net {
+        amount
+        currency
+      }
+    }
+  }
+  onSale
+  discount {
+    gross {
+      amount
+      currency
+    }
+    net {
+      amount
+      currency
+    }
+  }
+}
+
+fragment ProductWeight on Weight {
+  unit
+  value
+}
+
+fragment ProductCategory on Category {
+  id
+  name
+  slug
+  description
+  seoTitle
+  seoDescription
+}
+
+fragment ProductCollection on Collection {
+  id
+  name
+  slug
+  description
+  seoTitle
+  seoDescription
+}
+
+fragment ProductType on ProductType {
+  id
+  name
+  slug
+  hasVariants
+  isShippingRequired
+  isDigital
+  weight {
+    unit
+    value
+  }
+  taxClass {
+    id
+    name
+  }
+}
+
+fragment SelectedAttribute on SelectedAttribute {
+  attribute {
+    id
+    name
+    slug
+    inputType
+    entityType
+    unit
+    choices(first: 100) {
+      edges {
+        node {
+          id
+          name
+          slug
+          value
+        }
+      }
+    }
+  }
+  values {
+    id
+    name
+    slug
+    value
+    richText
+    boolean
+    date
+    dateTime
+    file {
+      url
+      contentType
+    }
+    reference
+  }
+}
+
+fragment AutoAccessoryCompatibility on AutoAccessoryCompatibility {
+  brand
+  model
+  yearRange
+  modification
+}
+
+fragment AutoAccessoryAttributes on AutoAccessoryAttributes {
+  productCategory
+  productType
+  compatibility {
+    ...AutoAccessoryCompatibility
+  }
+  colorScheme
+  partNumber
+  material
+  weightCapacity
+  tubeDiameter
+  length
+  width
+  installationType
+  compatibleWithAccessory
+  productDescription
+}
+
+fragment AutoAccessoryProduct on AutoAccessoryProduct {
+  ...ProductBasicInfo
+  productType {
+    ...ProductType
+  }
+  category {
+    ...ProductCategory
+  }
+  collections {
+    ...ProductCollection
+  }
+  media {
+    ...ProductMedia
+  }
+  thumbnail {
+    ...ProductThumbnail
+  }
+  attributes {
+    ...SelectedAttribute
+  }
+  autoAccessoryAttributes {
+    ...AutoAccessoryAttributes
+  }
+  pricing {
+    ...ProductPricing
+  }
+  weight {
+    ...ProductWeight
+  }
+}
+
+fragment ProductVariantBasicInfo on ProductVariant {
+  id
+  name
+  sku
+  trackInventory
+  quantityAvailable
+  isPreorder
+  preorderEndDate
+  created
+  updatedAt
+}
+
+fragment VariantPricing on VariantPricing {
+  price {
+    gross {
+      amount
+      currency
+    }
+    net {
+      amount
+      currency
+    }
+  }
+  onSale
+  discount {
+    gross {
+      amount
+      currency
+    }
+    net {
+      amount
+      currency
+    }
+  }
+}
+
+fragment AutoAccessoryVariant on AutoAccessoryVariant {
+  ...ProductVariantBasicInfo
+  product {
+    ...ProductBasicInfo
+  }
+  weight {
+    ...ProductWeight
+  }
+  pricing {
+    ...VariantPricing
+  }
+  attributes {
+    ...SelectedAttribute
+  }
+  media {
+    ...ProductMedia
+  }
+  autoAccessoryAttributes {
+    ...AutoAccessoryAttributes
+  }
+}
+
+fragment ProductListItem on Product {
+  ...ProductBasicInfo
+  thumbnail {
+    ...ProductThumbnail
+  }
+  pricing {
+    ...ProductPricing
+  }
+  category {
+    ...ProductCategory
+  }
+  collections {
+    ...ProductCollection
+  }
+  autoAccessoryAttributes {
+    ...AutoAccessoryAttributes
+  }
+}
+

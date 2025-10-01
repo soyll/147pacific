@@ -1,0 +1,156 @@
+# Checkout queries for auto accessories
+
+query GetCheckout(
+  $id: ID
+  $token: UUID
+) {
+  checkout(id: $id, token: $token) {
+    ...AutoAccessoryCheckout
+  }
+}
+
+query GetCheckoutLines(
+  $checkoutId: ID!
+) {
+  checkout(id: $checkoutId) {
+    id
+    lines {
+      ...CheckoutLine
+    }
+    autoAccessoryLines {
+      ...AutoAccessoryCheckoutLine
+    }
+    totalPrice {
+      ...TaxedMoney
+    }
+    subtotalPrice {
+      ...TaxedMoney
+    }
+    shippingPrice {
+      ...TaxedMoney
+    }
+    quantity
+  }
+}
+
+query GetAvailableShippingMethods(
+  $checkoutId: ID!
+  $address: AddressInput
+) {
+  checkout(id: $checkoutId) {
+    id
+    availableShippingMethods {
+      ...ShippingMethod
+    }
+  }
+}
+
+query GetAvailablePaymentGateways(
+  $checkoutId: ID!
+) {
+  checkout(id: $checkoutId) {
+    id
+    availablePaymentGateways {
+      ...PaymentGateway
+    }
+  }
+}
+
+query GetAvailableCollectionPoints(
+  $checkoutId: ID!
+  $address: AddressInput
+) {
+  checkout(id: $checkoutId) {
+    id
+    availableCollectionPoints {
+      ...CollectionPoint
+    }
+  }
+}
+
+query ValidateAccessoryCompatibility(
+  $accessoryId: ID!
+  $subAccessoryId: ID!
+) {
+  validateAccessoryCompatibility(
+    accessoryId: $accessoryId
+    subAccessoryId: $subAccessoryId
+  ) {
+    isValid
+    message
+    conflicts
+  }
+}
+
+query GetUserOrders(
+  $first: Int
+  $after: String
+) {
+  me {
+    id
+    email
+    firstName
+    lastName
+    orders(first: $first, after: $after) {
+      edges {
+        node {
+          ...Order
+        }
+      }
+      pageInfo {
+        hasNextPage
+        hasPreviousPage
+        startCursor
+        endCursor
+      }
+    }
+  }
+}
+
+query GetOrderDetails(
+  $id: ID!
+) {
+  order(id: $id) {
+    ...Order
+  }
+}
+
+query GetCurrentUser {
+  me {
+    id
+    email
+    firstName
+    lastName
+    isActive
+    dateJoined
+    lastLogin
+    defaultShippingAddress {
+      ...Address
+    }
+    defaultBillingAddress {
+      ...Address
+    }
+    addresses {
+      ...Address
+    }
+  }
+}
+
+query GetChannels {
+  channels {
+    id
+    name
+    slug
+    currencyCode
+    defaultCountry {
+      code
+      country
+    }
+    countries {
+      code
+      country
+    }
+    isActive
+  }
+}
+

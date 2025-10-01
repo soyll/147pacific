@@ -1,64 +1,32 @@
-# Base image
-FROM node:20-alpine AS base
+# Build stage
+FROM node:18-alpine AS builder
 
-# Install dependencies only when needed
-FROM base AS deps
-RUN apk add --no-cache libc6-compat
 WORKDIR /app
 
-# Enable Corepack and install the specified pnpm version directly
-RUN corepack enable
-COPY package.json pnpm-lock.yaml ./
-RUN corepack prepare pnpm@$(cat package.json | jq -r '.engines.pnpm') --activate
-RUN pnpm install --frozen-lockfile --prefer-offline
+# Copy package files
+COPY package.json ./
 
-# Rebuild the source code only when needed
-FROM base AS builder
-WORKDIR /app
+# Install dependencies
+RUN npm install
 
-# Re-enable Corepack in the builder stage and install pnpm
-RUN corepack enable
-RUN corepack prepare pnpm@$(cat package.json | jq -r '.engines.pnpm') --activate
-COPY --from=deps /app/node_modules ./node_modules
+# Copy source code
 COPY . .
 
-# Copy schema locally for GraphQL code generation
-COPY schema.graphql ./
-
-# Set environment variables for Next.js
-ENV NEXT_OUTPUT=standalone
-ARG NEXT_PUBLIC_SALEOR_API_URL
-ENV NEXT_PUBLIC_SALEOR_API_URL=${NEXT_PUBLIC_SALEOR_API_URL}
-ARG NEXT_PUBLIC_STOREFRONT_URL
-ENV NEXT_PUBLIC_STOREFRONT_URL=${NEXT_PUBLIC_STOREFRONT_URL}
-
 # Build the application
-RUN pnpm run generate
-RUN pnpm build
+RUN npm run build
 
-# Production image, copy all the files and run Next.js
-FROM base AS runner
-WORKDIR /app
+# Production stage
+FROM nginx:alpine
 
-ENV NODE_ENV production
-ENV NEXT_PUBLIC_SALEOR_API_URL=${NEXT_PUBLIC_SALEOR_API_URL}
-ENV NEXT_PUBLIC_STOREFRONT_URL=${NEXT_PUBLIC_STOREFRONT_URL}
-# Force Next.js to bind to all interfaces
-ENV HOST=0.0.0.0
-ENV PORT=3000
+# Copy built files from builder stage
+COPY --from=builder /app/dist /usr/share/nginx/html
 
-# Add non-root user and set permissions
-RUN addgroup --system --gid 1001 nodejs
-RUN adduser --system --uid 1001 nextjs
-RUN chown -R nextjs:nodejs /app
+# Copy nginx configuration
+COPY nginx.conf /etc/nginx/nginx.conf
 
-# Create .next directory and set permissions before switching user
-RUN mkdir .next && chown nextjs:nodejs .next
+# Expose port 80
+EXPOSE 80
 
-USER nextjs
+# Start nginx
+CMD ["nginx", "-g", "daemon off;"]
 
-COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
-COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
-
-# Explicitly set the host address to bind to all interfaces
-CMD ["node", "server.js", "-H", "0.0.0.0"]

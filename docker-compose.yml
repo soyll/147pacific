@@ -1,0 +1,158 @@
+services:
+  api:
+    image: ghcr.io/saleor/saleor:3.20
+    ports:
+      - 8000:8000
+    restart: unless-stopped
+    networks:
+      - saleor-network
+    depends_on:
+      - db
+      - redis
+      - jaeger
+    volumes:
+      - saleor-media:/app/media
+    env_file:
+      - backend/saleor-platform/common.env
+      - backend/saleor-platform/backend.env
+    environment:
+      - JAEGER_AGENT_HOST=jaeger
+      - DASHBOARD_URL=http://localhost:9000/
+      - ALLOWED_HOSTS=*,localhost,host.docker.internal,127.0.0.1,api,${DOMAIN:-localhost}
+      - STOREFRONT_URL=http://localhost:3000/
+      - DASHBOARD_URL=http://localhost:9000/
+
+  dashboard:
+    image: ghcr.io/saleor/saleor-dashboard:latest
+    ports:
+      - 9000:80
+    restart: unless-stopped
+    networks:
+      - saleor-network
+    environment:
+      - API_URI=http://api:8000/graphql/
+
+  db:
+    image: library/postgres:15-alpine
+    ports:
+      - 5432:5432
+    restart: unless-stopped
+    networks:
+      - saleor-network
+    volumes:
+      - saleor-db:/var/lib/postgresql/data
+      - ./backend/saleor-platform/replica_user.sql:/docker-entrypoint-initdb.d/replica_user.sql
+    environment:
+      - POSTGRES_USER=saleor
+      - POSTGRES_PASSWORD=saleor
+      - POSTGRES_DB=saleor
+
+  redis:
+    image: library/redis:7.0-alpine
+    ports:
+      - 6379:6379
+    restart: unless-stopped
+    networks:
+      - saleor-network
+    volumes:
+      - saleor-redis:/data
+
+  worker:
+    image: ghcr.io/saleor/saleor:3.20
+    command: celery -A saleor --app=saleor.celeryconf:app worker --loglevel=info -B
+    restart: unless-stopped
+    networks:
+      - saleor-network
+    env_file:
+      - backend/saleor-platform/common.env
+      - backend/saleor-platform/backend.env
+    depends_on:
+      - redis
+      - mailpit
+    volumes:
+      - saleor-media:/app/media
+
+  jaeger:
+    image: jaegertracing/all-in-one
+    ports:
+      - "5775:5775/udp"
+      - "6831:6831/udp"
+      - "6832:6832/udp"
+      - "5778:5778"
+      - "16686:16686"
+      - "14268:14268"
+      - "9411:9411"
+    restart: unless-stopped
+    networks:
+      - saleor-network
+    volumes:
+      - type: tmpfs
+        target: /tmp
+
+  mailpit:
+    image: axllent/mailpit
+    ports:
+      - 1025:1025 # smtp server
+      - 8025:8025 # web ui
+    restart: unless-stopped
+    networks:
+      - saleor-network
+
+  configurator:
+    build:
+      context: ./service/configurator
+      dockerfile: Dockerfile
+    ports:
+      - 3001:3000
+    restart: unless-stopped
+    networks:
+      - saleor-network
+    environment:
+      - SALEOR_API_URL=http://api:8000/graphql/
+      - SALEOR_EMAIL=admin@147pacific.com
+      - SALEOR_PASSWORD=p@ci147fiC@cCe$$orRy
+      - SALEOR_API_TOKEN=${SALEOR_API_TOKEN:-}
+    depends_on:
+      - api
+
+  dummy-payment-app:
+    build:
+      context: ./service/dummy-payment-app
+      dockerfile: Dockerfile.dev
+    ports:
+      - 3002:3000
+    restart: unless-stopped
+    networks:
+      - saleor-network
+    environment:
+      - SALEOR_API_URL=http://api:8000/graphql/
+      - SALEOR_API_TOKEN=${SALEOR_API_TOKEN:-}
+    depends_on:
+      - api
+
+  storefront:
+    build:
+      context: ./frontend/storefront
+      dockerfile: Dockerfile
+    ports:
+      - 3000:80
+    restart: unless-stopped
+    networks:
+      - saleor-network
+    environment:
+      - VITE_SALEOR_API_URL=http://api:8000/graphql/
+      - VITE_SALEOR_CHANNEL=online-store
+    depends_on:
+      - api
+
+volumes:
+  saleor-db:
+    driver: local
+  saleor-redis:
+    driver: local
+  saleor-media:
+    driver: local
+
+networks:
+  saleor-network:
+    driver: bridge

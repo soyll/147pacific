@@ -1,0 +1,270 @@
+# Product queries for auto accessories
+
+query GetAutoAccessoryProducts(
+  $first: Int
+  $after: String
+  $last: Int
+  $before: String
+  $filter: ProductFilterInput
+  $sortBy: ProductOrder
+  $channel: String
+) {
+  autoAccessoryProducts(
+    first: $first
+    after: $after
+    last: $last
+    before: $before
+    filter: $filter
+    sortBy: $sortBy
+    channel: $channel
+  ) {
+    edges {
+      node {
+        ...AutoAccessoryProduct
+      }
+    }
+    pageInfo {
+      hasNextPage
+      hasPreviousPage
+      startCursor
+      endCursor
+    }
+    totalCount
+  }
+}
+
+query GetAutoAccessoryProduct(
+  $id: ID
+  $slug: String
+  $channel: String
+) {
+  autoAccessoryProduct(id: $id, slug: $slug, channel: $channel) {
+    ...AutoAccessoryProduct
+    variants {
+      ...AutoAccessoryVariant
+    }
+  }
+}
+
+query GetCompatibleAccessories(
+  $productId: ID!
+  $channel: String
+) {
+  compatibleAccessories(productId: $productId, channel: $channel) {
+    ...AutoAccessoryProduct
+  }
+}
+
+query GetCompatibleSubAccessories(
+  $accessoryId: ID!
+  $channel: String
+) {
+  compatibleSubAccessories(accessoryId: $accessoryId, channel: $channel) {
+    ...AutoAccessoryProduct
+  }
+}
+
+query GetVehicleCompatibility(
+  $brand: String!
+  $model: String!
+  $year: String!
+  $modification: String
+  $channel: String
+) {
+  vehicleCompatibility(
+    brand: $brand
+    model: $model
+    year: $year
+    modification: $modification
+    channel: $channel
+  ) {
+    ...AutoAccessoryProduct
+  }
+}
+
+query GetBedRackProducts(
+  $first: Int
+  $after: String
+  $channel: String
+) {
+  bedRackProducts(first: $first, after: $after, channel: $channel) {
+    edges {
+      node {
+        ...ProductListItem
+      }
+    }
+    pageInfo {
+      hasNextPage
+      hasPreviousPage
+      startCursor
+      endCursor
+    }
+    totalCount
+  }
+}
+
+query GetBullBarProducts(
+  $first: Int
+  $after: String
+  $channel: String
+) {
+  bullBarProducts(first: $first, after: $after, channel: $channel) {
+    edges {
+      node {
+        ...ProductListItem
+      }
+    }
+    pageInfo {
+      hasNextPage
+      hasPreviousPage
+      startCursor
+      endCursor
+    }
+    totalCount
+  }
+}
+
+query GetHDGrilleGuardProducts(
+  $first: Int
+  $after: String
+  $channel: String
+) {
+  hdGrilleGuardProducts(first: $first, after: $after, channel: $channel) {
+    edges {
+      node {
+        ...ProductListItem
+      }
+    }
+    pageInfo {
+      hasNextPage
+      hasPreviousPage
+      startCursor
+      endCursor
+    }
+    totalCount
+  }
+}
+
+query GetRunningBoardProducts(
+  $first: Int
+  $after: String
+  $channel: String
+) {
+  runningBoardProducts(first: $first, after: $after, channel: $channel) {
+    edges {
+      node {
+        ...ProductListItem
+      }
+    }
+    pageInfo {
+      hasNextPage
+      hasPreviousPage
+      startCursor
+      endCursor
+    }
+    totalCount
+  }
+}
+
+query SearchAutoAccessoryProducts(
+  $query: String!
+  $first: Int
+  $after: String
+  $channel: String
+  $filter: ProductFilterInput
+) {
+  products(
+    first: $first
+    after: $after
+    channel: $channel
+    filter: $filter
+    search: $query
+  ) {
+    edges {
+      node {
+        ...ProductListItem
+      }
+    }
+    pageInfo {
+      hasNextPage
+      hasPreviousPage
+      startCursor
+      endCursor
+    }
+    totalCount
+  }
+}
+
+query GetProductCategories(
+  $first: Int
+  $after: String
+  $level: Int
+  $channel: String
+) {
+  categories(
+    first: $first
+    after: $after
+    level: $level
+    channel: $channel
+  ) {
+    edges {
+      node {
+        id
+        name
+        slug
+        description
+        seoTitle
+        seoDescription
+        backgroundImage {
+          url
+          alt
+        }
+        children {
+          id
+          name
+          slug
+        }
+      }
+    }
+    pageInfo {
+      hasNextPage
+      hasPreviousPage
+      startCursor
+      endCursor
+    }
+  }
+}
+
+query GetProductCollections(
+  $first: Int
+  $after: String
+  $channel: String
+) {
+  collections(
+    first: $first
+    after: $after
+    channel: $channel
+  ) {
+    edges {
+      node {
+        id
+        name
+        slug
+        description
+        seoTitle
+        seoDescription
+        backgroundImage {
+          url
+          alt
+        }
+      }
+    }
+    pageInfo {
+      hasNextPage
+      hasPreviousPage
+      startCursor
+      endCursor
+    }
+  }
+}
+

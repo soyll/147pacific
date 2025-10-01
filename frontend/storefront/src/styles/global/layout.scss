@@ -1,0 +1,38 @@
+.container {
+  max-width: var(--container-size);
+  margin: 0 auto;
+  padding: 0 var(--container-padding);
+}
+
+
+.nav__logo {
+  height: 2rem;
+  width: 11rem;
+  align-self: center;
+}
+
+@media screen and (max-width: 767px) {
+  .nav__logo--header {
+    width: 9.375rem;
+    height: 1.75rem;
+  }
+}
+
+.footer {
+  border-radius: var(--base-border-radius) var(--base-border-radius) 0 0;
+  overflow: hidden;
+}
+
+.menu {
+  background-color: #AF3C0A;
+}
+
+.menu__wrapper {
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+}
+
+.menu__wrapper--footer {
+  min-height: auto;
+}

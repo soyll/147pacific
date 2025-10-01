@@ -487,7 +487,7 @@ export const Checkout: React.FC<CheckoutProps> = ({
           />
         )}
         
-        {/* Additional steps */}
+        {}
       </div>
       
       <CheckoutSummary checkout={checkout} />

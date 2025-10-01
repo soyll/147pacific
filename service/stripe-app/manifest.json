@@ -1,0 +1,19 @@
+{
+  "name": "Stripe Payment Gateway",
+  "version": "1.0.0",
+  "about": "Official Stripe payment gateway integration for Saleor",
+  "dataPrivacy": "Stripe processes payment data according to their privacy policy",
+  "dataPrivacyUrl": "https://stripe.com/privacy",
+  "homepageUrl": "https://stripe.com",
+  "supportUrl": "https://support.stripe.com",
+  "permissions": [
+    "MANAGE_ORDERS",
+    "MANAGE_PAYMENTS",
+    "MANAGE_CHECKOUTS"
+  ],
+  "id": "saleor.app.stripe",
+  "appUrl": "https://stripe-app.saleor.app",
+  "configurationUrl": "https://stripe-app.saleor.app/configuration",
+  "tokenTargetUrl": "https://stripe-app.saleor.app/api/register"
+}
+

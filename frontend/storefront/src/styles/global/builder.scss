@@ -1,0 +1,240 @@
+// Builder styles migrated from legacy/assets/styles/css/index.css
+
+.builder__wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 0.625rem;
+
+  @media screen and (max-width: 767px) {
+    gap: 1rem;
+    background: #111214;
+    border-radius: var(--base-border-radius);
+  }
+}
+
+.builder-canvas {
+  height: 37.5rem;
+  width: 100%;
+  background: #1a1a1a;
+  border-radius: var(--base-border-radius);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden; // Предотвращает вылезание canvas за границы
+
+  @media screen and (max-width: 767px) {
+    height: 11.25rem;
+  }
+
+  &__3d {
+    width: 100% !important;
+    height: 100% !important;
+    display: block;
+    border-radius: var(--base-border-radius);
+  }
+
+  &__360 {
+    place-self: center;
+
+    &-icon {
+      width: 55px;
+      height: 42px;
+      color: rgba(255, 255, 255, 0.5);
+      filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+    }
+  }
+
+  &__container {
+    display: flex;
+    flex-direction: column;
+    max-width: calc(var(--container-size) / 2);
+    padding: 0;
+    gap: 1rem;
+
+    @media screen and (max-width: 767px) {
+      width: 100%;
+    }
+  }
+}
+
+.builder-progress {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  color: #fff;
+
+  &__bar {
+    width: 200px;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 2px;
+    overflow: hidden;
+    margin: 1rem 0;
+
+    &-fill {
+      height: 100%;
+      background: var(--color-accent);
+      border-radius: 2px;
+      transition: width 0.3s ease;
+      width: 0%;
+    }
+  }
+
+  &__text {
+    font-size: 0.875rem;
+    opacity: 0.8;
+  }
+}
+
+.builder-color {
+  width: 1.875rem;
+  height: 1.875rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  position: relative;
+  transition: 0.3s border-color;
+
+  &:hover {
+    cursor: pointer;
+  }
+
+  &:has(:checked) {
+    border-color: var(--color-accent);
+  }
+
+  &::before {
+    content: "";
+    width: calc(100% - 2px);
+    height: calc(100% - 2px);
+    left: 1px;
+    top: 1px;
+    position: absolute;
+    background: var(--builder-color);
+    border-radius: 50%;
+  }
+
+  &__input {
+    position: absolute;
+    pointer-events: none;
+    opacity: 0;
+    left: 0;
+    top: 0;
+    width: 1.875rem;
+    height: 1.875rem;
+  }
+}
+
+.builder-colors {
+  &__list {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 0.625rem;
+  }
+
+  &__wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.625rem;
+    text-align: center;
+
+    @media screen and (max-width: 767px) {
+      gap: 0.625rem;
+    }
+  }
+}
+
+.builder-footer {
+  &__wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 0.625rem;
+  }
+
+  &__row {
+    display: flex;
+    gap: 0.625rem;
+  }
+
+  &__text {
+    text-wrap: balance;
+    align-self: center;
+  }
+}
+
+.builder-main {
+  &__wrapper {
+    padding: 0 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+
+    @media screen and (min-width: 768px) {
+      background: #111214;
+      padding: 3.125rem;
+      border-radius: var(--base-border-radius);
+      gap: 2rem;
+    }
+  }
+}
+
+.builder-result {
+  &__header {
+    flex-grow: 1;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.625rem;
+
+    @media screen and (max-width: 767px) {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  }
+
+  &__button {
+    @media screen and (max-width: 767px) {
+      width: 100%;
+    }
+  }
+
+  &__wrapper {
+    display: flex;
+    align-items: center;
+    gap: 1.75rem;
+    border-radius: 1rem;
+    backdrop-filter: blur(20px);
+    background: rgba(255, 255, 255, 0.1);
+    padding: 1rem;
+
+    @media screen and (max-width: 767px) {
+      align-items: flex-start;
+      flex-direction: column;
+      gap: 1.5rem;
+      padding: 1.25rem;
+      border-radius: 0.5rem;
+    }
+  }
+}
+
+.builder-info {
+  &__wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    max-width: 50.625rem;
+    width: 100%;
+
+    @media screen and (max-width: 767px) {
+      gap: 1.25rem;
+    }
+  }
+}

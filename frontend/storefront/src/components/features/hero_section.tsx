@@ -1,0 +1,119 @@
+import React, { useState } from 'react';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { FreeMode, Scrollbar, Thumbs } from 'swiper/modules';
+import type { Swiper as SwiperType } from 'swiper';
+
+// Import Swiper styles
+import 'swiper/css';
+import 'swiper/css/free-mode';
+import 'swiper/css/scrollbar';
+import 'swiper/css/thumbs';
+
+export interface HeroSlide {
+  id: number;
+  image: string;
+  title: string;
+  description: string;
+}
+
+export interface HeroSectionProps {
+  slides: HeroSlide[];
+  bannerTitle?: string;
+  bannerDescription?: string;
+}
+
+export const HeroSection: React.FC<HeroSectionProps> = React.memo(({
+  slides,
+  bannerTitle,
+  bannerDescription
+}) => {
+  const [heroNavSwiper, setHeroNavSwiper] = useState<SwiperType | null>(null);
+
+  return (
+    <div className="hero">
+      <div className="hero-gradient-top"></div>
+      <div className="hero__wrapper">
+        {/* Background Swiper */}
+        <Swiper
+          modules={[Thumbs]}
+          className="swiper hero-slider"
+          spaceBetween={10}
+          slidesPerView={1}
+          loop={true}
+          thumbs={{ swiper: heroNavSwiper && !heroNavSwiper.destroyed ? heroNavSwiper : null }}
+        >
+          {slides.map((slide) => (
+            <SwiperSlide key={slide.id} className="hero-item">
+              <div className="hero-item__img">
+                <img src={slide.image} alt={slide.title} />
+              </div>
+            </SwiperSlide>
+          ))}
+        </Swiper>
+
+        {/* Hero Main Content */}
+        <div className="hero-main">
+          <div className="container">
+            <div className="hero-main__wrapper">
+              {(bannerTitle || bannerDescription) && (
+                <div className="hero-content">
+                  {bannerTitle && (
+                    <p className="title--big">
+                      {bannerTitle}
+                    </p>
+                  )}
+                  {bannerDescription && (
+                    <p className="text text--base">
+                      {bannerDescription}
+                    </p>
+                  )}
+                </div>
+              )}
+
+              <div className="hero-nav">
+                <Swiper
+                  modules={[FreeMode, Scrollbar]}
+                  className="swiper hero-nav__slider"
+                  onSwiper={setHeroNavSwiper}
+                  spaceBetween={16}
+                  slidesPerView="auto"
+                  freeMode={true}
+                  watchSlidesProgress={true}
+                  scrollbar={{
+                    el: ".hero-nav__scrollbar",
+                  }}
+                  breakpoints={{
+                    768: {
+                      slidesPerView: 4,
+                      spaceBetween: 50
+                    },
+                    320: {
+                      slidesPerView: 1,
+                      spaceBetween: 16
+                    }
+                  }}
+                >
+                  {slides.map((slide) => (
+                    <SwiperSlide key={slide.id} className="hero-nav__item">
+                      <p className="hero-nav__title">
+                        {slide.title}
+                      </p>
+                      <p className="text text--base hero-nav__text">
+                        {slide.description}
+                      </p>
+                    </SwiperSlide>
+                  ))}
+                </Swiper>
+                <div className="hero-nav__scrollbar"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="hero-gradient-bottom"></div>
+    </div>
+  );
+});
+
+HeroSection.displayName = 'HeroSection';
+

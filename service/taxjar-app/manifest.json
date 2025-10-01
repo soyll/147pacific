@@ -1,0 +1,19 @@
+{
+  "name": "TaxJar Tax Calculator",
+  "version": "1.0.0",
+  "about": "Official TaxJar tax calculation integration for Saleor",
+  "dataPrivacy": "TaxJar processes tax data according to their privacy policy",
+  "dataPrivacyUrl": "https://www.taxjar.com/privacy/",
+  "homepageUrl": "https://www.taxjar.com",
+  "supportUrl": "https://support.taxjar.com",
+  "permissions": [
+    "MANAGE_ORDERS",
+    "MANAGE_CHECKOUTS",
+    "MANAGE_TAXES"
+  ],
+  "id": "saleor.app.taxjar",
+  "appUrl": "https://taxjar-app.saleor.app",
+  "configurationUrl": "https://taxjar-app.saleor.app/configuration",
+  "tokenTargetUrl": "https://taxjar-app.saleor.app/api/register"
+}
+

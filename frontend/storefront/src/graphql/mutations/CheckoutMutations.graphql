@@ -1,0 +1,304 @@
+# Checkout mutations for auto accessories
+
+mutation CreateAutoAccessoryCheckout(
+  $input: CheckoutCreateInput!
+) {
+  autoAccessoryCheckoutCreate(input: $input) {
+    checkout {
+      ...AutoAccessoryCheckout
+    }
+    errors {
+      field
+      message
+      code
+    }
+  }
+}
+
+mutation AddAutoAccessoryCheckoutLines(
+  $checkoutId: ID!
+  $lines: [CheckoutLineInput!]!
+  $autoAccessoryCompatibility: AutoAccessoryCompatibilityInput
+) {
+  autoAccessoryCheckoutLinesAdd(
+    checkoutId: $checkoutId
+    lines: $lines
+    autoAccessoryCompatibility: $autoAccessoryCompatibility
+  ) {
+    checkout {
+      ...AutoAccessoryCheckout
+    }
+    errors {
+      field
+      message
+      code
+    }
+  }
+}
+
+mutation UpdateAutoAccessoryCheckoutLines(
+  $checkoutId: ID!
+  $lines: [CheckoutLineUpdateInput!]!
+) {
+  autoAccessoryCheckoutLinesUpdate(
+    checkoutId: $checkoutId
+    lines: $lines
+  ) {
+    checkout {
+      ...AutoAccessoryCheckout
+    }
+    errors {
+      field
+      message
+      code
+    }
+  }
+}
+
+mutation RemoveCheckoutLines(
+  $checkoutId: ID!
+  $lineIds: [ID!]!
+) {
+  checkoutLinesDelete(
+    checkoutId: $checkoutId
+    lineIds: $lineIds
+  ) {
+    checkout {
+      ...AutoAccessoryCheckout
+    }
+    errors {
+      field
+      message
+      code
+    }
+  }
+}
+
+mutation UpdateCheckoutShippingAddress(
+  $checkoutId: ID!
+  $shippingAddress: AddressInput!
+) {
+  checkoutShippingAddressUpdate(
+    checkoutId: $checkoutId
+    shippingAddress: $shippingAddress
+  ) {
+    checkout {
+      ...AutoAccessoryCheckout
+    }
+    errors {
+      field
+      message
+      code
+    }
+  }
+}
+
+mutation UpdateCheckoutBillingAddress(
+  $checkoutId: ID!
+  $billingAddress: AddressInput!
+) {
+  checkoutBillingAddressUpdate(
+    checkoutId: $checkoutId
+    billingAddress: $billingAddress
+  ) {
+    checkout {
+      ...AutoAccessoryCheckout
+    }
+    errors {
+      field
+      message
+      code
+    }
+  }
+}
+
+mutation UpdateCheckoutShippingMethod(
+  $checkoutId: ID!
+  $shippingMethodId: ID!
+) {
+  checkoutShippingMethodUpdate(
+    checkoutId: $checkoutId
+    shippingMethodId: $shippingMethodId
+  ) {
+    checkout {
+      ...AutoAccessoryCheckout
+    }
+    errors {
+      field
+      message
+      code
+    }
+  }
+}
+
+mutation UpdateCheckoutCollectionPoint(
+  $checkoutId: ID!
+  $collectionPointId: ID!
+) {
+  checkoutCollectionPointUpdate(
+    checkoutId: $checkoutId
+    collectionPointId: $collectionPointId
+  ) {
+    checkout {
+      ...AutoAccessoryCheckout
+    }
+    errors {
+      field
+      message
+      code
+    }
+  }
+}
+
+mutation AddCheckoutPromoCode(
+  $checkoutId: ID!
+  $promoCode: String!
+) {
+  checkoutAddPromoCode(
+    checkoutId: $checkoutId
+    promoCode: $promoCode
+  ) {
+    checkout {
+      ...AutoAccessoryCheckout
+    }
+    errors {
+      field
+      message
+      code
+    }
+  }
+}
+
+mutation RemoveCheckoutPromoCode(
+  $checkoutId: ID!
+  $promoCode: String!
+) {
+  checkoutRemovePromoCode(
+    checkoutId: $checkoutId
+    promoCode: $promoCode
+  ) {
+    checkout {
+      ...AutoAccessoryCheckout
+    }
+    errors {
+      field
+      message
+      code
+    }
+  }
+}
+
+mutation CompleteAutoAccessoryCheckout(
+  $checkoutId: ID!
+  $redirectUrl: String
+  $storeSource: Boolean
+) {
+  autoAccessoryCheckoutComplete(
+    checkoutId: $checkoutId
+    redirectUrl: $redirectUrl
+    storeSource: $storeSource
+  ) {
+    order {
+      ...Order
+    }
+    confirmationNeeded
+    confirmationData
+    errors {
+      field
+      message
+      code
+    }
+  }
+}
+
+mutation CreateCheckoutFromOrder(
+  $orderId: ID!
+) {
+  checkoutCreateFromOrder(orderId: $orderId) {
+    checkout {
+      ...AutoAccessoryCheckout
+    }
+    errors {
+      field
+      message
+      code
+    }
+  }
+}
+
+mutation UpdateCheckoutEmail(
+  $checkoutId: ID!
+  $email: String!
+) {
+  checkoutEmailUpdate(
+    checkoutId: $checkoutId
+    email: $email
+  ) {
+    checkout {
+      ...AutoAccessoryCheckout
+    }
+    errors {
+      field
+      message
+      code
+    }
+  }
+}
+
+mutation UpdateCheckoutLanguage(
+  $checkoutId: ID!
+  $languageCode: LanguageCodeEnum!
+) {
+  checkoutLanguageCodeUpdate(
+    checkoutId: $checkoutId
+    languageCode: $languageCode
+  ) {
+    checkout {
+      ...AutoAccessoryCheckout
+    }
+    errors {
+      field
+      message
+      code
+    }
+  }
+}
+
+mutation UpdateCheckoutMetadata(
+  $checkoutId: ID!
+  $input: [MetadataInput!]!
+) {
+  checkoutUpdateMetadata(
+    checkoutId: $checkoutId
+    input: $input
+  ) {
+    checkout {
+      ...AutoAccessoryCheckout
+    }
+    errors {
+      field
+      message
+      code
+    }
+  }
+}
+
+mutation UpdateCheckoutPrivateMetadata(
+  $checkoutId: ID!
+  $input: [MetadataInput!]!
+) {
+  checkoutUpdatePrivateMetadata(
+    checkoutId: $checkoutId
+    input: $input
+  ) {
+    checkout {
+      ...AutoAccessoryCheckout
+    }
+    errors {
+      field
+      message
+      code
+    }
+  }
+}
+

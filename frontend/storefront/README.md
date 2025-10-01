@@ -1,150 +1,239 @@
+# 147 Pacific - Premium Auto Accessories
 
-![Nextjs Storefront](./public/screenshot.png)
+Современное React приложение для продажи премиальных автомобильных аксессуаров, изготовленных в США.
 
-<div align="center">
-  <h1>Saleor Next.js Storefront</h1>
-  Starter pack for building performant e-commerce experiences with <a href="https://github.com/saleor/saleor">Saleor</a>.
-</div>
+## 🚀 Технологический стек
 
-<div align="center">
-  <a href="https://saleor.io/">Website</a>
-  <span> • </span>
-  <a href="https://docs.saleor.io/docs/3.x">Docs</a>
-  <span> • </span>
-  <a href="https://github.com/orgs/saleor/projects/45/views/2">Roadmap</a>
-  <span> • </span>
-  <a href="https://twitter.com/getsaleor">Twitter</a>
-  <span> • </span>
-  <a href="https://discord.gg/H52JTZAtSH">Discord</a>
-</div>
+- **Vite** - Быстрый сборщик и dev-сервер
+- **React 18** - Современная библиотека для UI
+- **TypeScript** - Строгая типизация
+- **CSS Modules** - Изолированные стили
+- **React Router** - Клиентская маршрутизация
+- **Swiper** - Слайдеры и карусели
+- **Chart.js** - Графики и диаграммы
+- **ESLint + Prettier** - Линтинг и форматирование
+- **Husky** - Git hooks
 
-<br/>
+## 📁 Архитектура проекта
 
-<div align="center">
-
-[![Storefront Roadmap](https://img.shields.io/badge/ROADMAP-EFEFEF?style=for-the-badge)](https://github.com/orgs/saleor/projects/45/views/2)
-[![Storefront Demo](https://img.shields.io/badge/VIEW%20DEMO-DFDFDF?style=for-the-badge)](https://storefront.saleor.io)
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fsaleor%2Fstorefront&env=NEXT_PUBLIC_SALEOR_API_URL&envDescription=Full%20Saleor%20GraphQL%20endpoint%20URL%2C%20eg%3A%20https%3A%2F%2Fstorefront1.saleor.cloud%2Fgraphql%2F&project-name=my-saleor-storefront&repository-name=my-saleor-storefront&demo-title=Saleor%20Next.js%20Storefront&demo-description=Starter%20pack%20for%20building%20performant%20e-commerce%20experiences%20with%20Saleor.&demo-url=https%3A%2F%2Fstorefront.saleor.io%2F&demo-image=https%3A%2F%2Fstorefront-d5h86wzey-saleorcommerce.vercel.app%2Fopengraph-image.png%3F4db0ee8cf66e90af)
-</div>
-
-> [!TIP]
-> Questions or issues? Check our [discord](https://discord.gg/H52JTZAtSH) channel for help.
-
-## Features
-
-- **Next.js 14**: File-based routing, React 18, Fast Refresh, Image Optimization and more.
-- **App Router**: Uses React Server Components, Data Cache, and async components.
-- **TypeScript**: Strongly typed codebase and GraphQL payloads with strict mode.
-- **GraphQL best practices**: Uses GraphQL Codegen and `TypedDocumentString` to reduce boilerplate and bundle size.
-- **Customizable CSS**: TailwindCSS can be extended or replaced with an alternative CSS solution.
-- **Tooling included**: Comes with ESLint, Prettier, Husky, Lint Staged, and Codegen preconfigured.
-
-**Global:**
-
-- Channel switcher and Geo detection (coming soon)
-- Dynamic menu
-- Hamburger menu
-- SEO data
-
-**Checkout:**
-
-- Single page checkout (including login)
-- Portable to other frameworks (doesn't use Next.js components)
-- Adyen integration
-- Stripe integration
-- Customer address book
-- Vouchers and Gift Cards
-
-**Product catalog:**
-
-- Categories
-- Variant selection
-- Product attributes
-- Image optimization
-
-**My account:**
-
-- Order history (coming soon)
-- Order completion
-- Order details
-
-## Quickstart
-
-### 1. Create Saleor backend instance
-To quickly get started with the backend, use a free developer account at [Saleor Cloud](https://cloud.saleor.io/?utm_source=storefront&utm_medium=github).
-
-Alternatively you can [run Saleor locally using docker](https://docs.saleor.io/docs/3.x/setup/docker-compose?utm_source=storefront&utm_medium=github).
-
-### 2. Clone storefront
-
-#### [Option 1] Using Comand line tools
-
-Install or update to the latest version of the [Saleor CLI](https://docs.saleor.io/docs/3.x/cli) by running the following command:
-
-```bash
-npm i -g @saleor/cli@latest
+```
+src/
+├── components/           # React компоненты
+│   ├── common/          # Переиспользуемые UI компоненты
+│   │   ├── Button/      # Кнопки
+│   │   ├── Input/       # Поля ввода
+│   │   ├── Modal/       # Модальные окна
+│   │   ├── LazyImage/   # Ленивая загрузка изображений
+│   │   ├── VirtualList/ # Виртуализированные списки
+│   │   └── ...
+│   ├── layout/          # Компоненты макета
+│   │   ├── Header/      # Шапка сайта
+│   │   └── Footer/      # Подвал сайта
+│   └── features/        # Бизнес-компоненты
+│       ├── HeroSection/ # Главная секция
+│       ├── AboutSection/# Секция "О нас"
+│       └── ...
+├── hooks/               # Кастомные React хуки
+│   ├── useCart.ts      # Управление корзиной
+│   ├── useLocalStorage.ts # Работа с localStorage
+│   ├── useDebounce.ts  # Дебаунсинг
+│   └── ...
+├── types/               # TypeScript типы
+├── utils/               # Вспомогательные функции
+├── assets/              # Статические ресурсы
+│   ├── images/         # Изображения
+│   ├── fonts/          # Шрифты
+│   └── libs/           # Внешние библиотеки
+├── styles/              # Стили
+│   ├── global/         # Глобальные стили
+│   └── modules/        # CSS Modules
+└── pages/               # Страницы приложения
 ```
 
-Clone storefront, install dependencies, and connect with the provided Saleor instance hostname
+## 🛠 Установка и запуск
 
+### Требования
+- Node.js 18+ 
+- npm или yarn
+
+### Установка зависимостей
 ```bash
-saleor storefront create --url https://{SALEOR_HOSTNAME}/graphql/
+npm install
 ```
 
-#### [Option 2] Manual install
-
-Clone repository:
+### Запуск в режиме разработки
 ```bash
-git clone https://github.com/saleor/storefront.git
+npm run dev
 ```
 
-Copy environment variables from `.env.example` to `.env`:
-
+### Сборка для продакшена
 ```bash
-cp .env.example .env
+npm run build
 ```
 
-Edit `.env` and set `NEXT_PUBLIC_SALEOR_API_URL` to your Saleor GraphQL endpoint URL, e.g., `https://example.saleor.cloud/graphql/`.
-
-Then, [install `pnpm`](https://pnpm.io/installation) and run the following command to install all dependencies in the repo:
-
+### Предварительный просмотр сборки
 ```bash
-pnpm i
+npm run preview
 ```
 
+## 📋 Доступные скрипты
 
-## Payments
+- `npm run dev` - Запуск dev-сервера
+- `npm run build` - Сборка для продакшена
+- `npm run preview` - Предварительный просмотр сборки
+- `npm run lint` - Проверка кода линтером
+- `npm run lint:fix` - Автоисправление ошибок линтера
+- `npm run format` - Форматирование кода
+- `npm run format:check` - Проверка форматирования
+- `npm run type-check` - Проверка типов TypeScript
 
-Currently, Saleor Storefront supports payments via the [Saleor Adyen App](https://docs.saleor.io/docs/3.x/developer/app-store/apps/adyen). To install and configure the payment app go to the "Apps" section in the Saleor Dashboard (App Store is only available in Saleor Cloud).
+## 🎨 Особенности дизайна
 
-> WARNING:
-> To configure the Adyen App, you must have an account with [Adyen](https://www.adyen.com/).
+### Цветовая палитра
+- **Основной**: #F58220 (оранжевый)
+- **Фон**: #0E0E0F (темный)
+- **Текст**: #FFFFFF (белый)
+- **Вторичный**: #42474B (серый)
 
-> NOTE:
-> Saleor Stripe App integration is a work in progress.
+### Типографика
+- **Основной шрифт**: Myriad Pro
+- **Адаптивные размеры**: Fluid typography
+- **Поддержка**: Мобильные устройства
 
-## Development
+### Компоненты
+- **Кнопки**: 5 вариантов (primary, secondary, accent, text, dark)
+- **Поля ввода**: С валидацией и ошибками
+- **Модальные окна**: С focus trap и accessibility
+- **Слайдеры**: Swiper.js интеграция
+- **Ленивая загрузка**: Оптимизация изображений
 
-To start the development server, run the following:
+## ⚡ Оптимизации производительности
 
+### Code Splitting
+- Автоматическое разделение кода по роутам
+- Lazy loading компонентов
+- Динамические импорты
+
+### Оптимизация изображений
+- LazyImage компонент с Intersection Observer
+- WebP формат для лучшего сжатия
+- Placeholder'ы во время загрузки
+
+### Виртуализация
+- VirtualList для больших списков
+- useVirtualization хук
+- Оптимизированный рендеринг
+
+### Кэширование
+- Service Worker (PWA)
+- LocalStorage для состояния
+- Мемоизация компонентов
+
+## ♿ Accessibility (A11y)
+
+### ARIA атрибуты
+- `aria-label` для иконок
+- `aria-expanded` для меню
+- `aria-modal` для модальных окон
+- `role` атрибуты
+
+### Навигация с клавиатуры
+- Tab navigation
+- Focus trap в модальных окнах
+- Skip links для быстрого доступа
+- Escape key для закрытия
+
+### Screen readers
+- Announcer компонент
+- Семантическая разметка
+- Alt тексты для изображений
+- Скрытый контент для screen readers
+
+## 📱 Responsive Design
+
+### Breakpoints
+- **Mobile**: < 768px
+- **Tablet**: 768px - 1023px  
+- **Desktop**: ≥ 1024px
+
+### Адаптивные компоненты
+- Мобильное меню
+- Адаптивные слайдеры
+- Fluid typography
+- Responsive images
+
+## 🔧 Конфигурация
+
+### Vite
+- Path aliases (@/ для src/)
+- CSS Modules
+- PWA plugin
+- Code splitting
+
+### TypeScript
+- Strict mode
+- Path mapping
+- ES2020 target
+- React JSX
+
+### ESLint
+- TypeScript rules
+- React hooks rules
+- Accessibility rules
+- Import order
+
+## 🚀 Деплой
+
+### Production сборка
 ```bash
-pnpm dev
+npm run build
 ```
 
-The app is now running at `http://localhost:3000`.
+### Оптимизации
+- Минификация CSS/JS
+- Tree shaking
+- Gzip compression
+- CDN для статических ресурсов
 
-> NOTE:
-> Saleor Storefront is a Next.js app. In case you are not familiar with Next.js, we recommend you to read the [Next.js documentation](https://nextjs.org/docs) (make sure you've selected "Using App Router" in the sidebar).
+### PWA
+- Service Worker
+- Web App Manifest
+- Offline support
+- Install prompt
 
-#### GraphQL queries and mutations:
+## 📊 Мониторинг
 
-After altering or creating new GraphQL queries in `gql` folder, you need to run the following command to generate types and javascript queries:
+### Performance
+- Core Web Vitals
+- Lighthouse audits
+- Bundle analyzer
+- Performance budgets
 
-```bash
-pnpm run generate
-```
+### Analytics
+- Google Analytics 4
+- Custom events
+- User journey tracking
+- Error monitoring
 
-### Preview content changes instantly (Draft Mode)
+## 🤝 Разработка
 
-Visit `http://{your-host}/api/draft` to enable cookies that disable caching to preview catalog and content changes instantly. [Learn more about the Draft Mode in Next.js docs.](https://nextjs.org/docs/app/building-your-application/configuring/draft-mode)
+### Git workflow
+- Feature branches
+- Pull requests
+- Code review
+- Automated testing
+
+### Code quality
+- Pre-commit hooks
+- Lint-staged
+- Type checking
+- Format validation
+
+## 📝 Лицензия
+
+© 2024 147 Pacific. Все права защищены.
+
+---
+
+**Создано с ❤️ для премиальных автомобильных аксессуаров Made in USA**
 

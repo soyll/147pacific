@@ -1,0 +1,331 @@
+// Product cards styles migrated from legacy/assets/styles/css/index.css
+
+.checkbox {
+  display: flex;
+  align-items: center;
+  gap: 0.875rem;
+  position: relative;
+  --checkmark-size: 2.5rem;
+
+  &:hover {
+    cursor: pointer;
+  }
+
+  @media screen and (max-width: 767px) {
+    gap: 1.25rem;
+    --checkmark-size: 2rem;
+  }
+
+  &--small {
+    --checkmark-size: 1.5rem;
+    gap: 0.75rem;
+  }
+
+  &:has(:checked) .checkbox__checkmark {
+    color: var(--color-accent);
+  }
+
+  &__text {
+    &--small {
+      font-size: 0.875rem;
+      color: #A7A6A9;
+    }
+  }
+
+  &__input {
+    position: absolute;
+    opacity: 0;
+    left: 0;
+    top: 0;
+    pointer-events: none;
+    width: var(--checkmark-size);
+    height: var(--checkmark-size);
+  }
+
+  &__checkmark {
+    width: var(--checkmark-size);
+    height: var(--checkmark-size);
+    flex-shrink: 0;
+    background: #1a1b1d;
+    border-radius: 0.375rem;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: transparent;
+    transition: 0.3s color;
+
+    .icon {
+      width: 1rem;
+      height: 1rem;
+    }
+  }
+}
+
+.product-list {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  grid-auto-rows: 12.5rem;
+  gap: 0.625rem;
+
+  &--small {
+    grid-auto-rows: 9.625rem;
+  }
+
+  @media screen and (max-width: 767px) {
+    grid-auto-rows: auto;
+  }
+}
+
+.product-card {
+  &__column {
+    display: flex;
+    flex-direction: column;
+    gap: 0.375rem;
+  }
+
+  &__checkbox {
+    margin: 0 auto;
+
+    @media screen and (max-width: 767px) {
+      position: absolute;
+      left: 0.625rem;
+      top: 0.625rem;
+    }
+  }
+
+  &__quantity {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
+
+    @media screen and (max-width: 767px) {
+      flex-direction: row;
+      align-items: flex-end;
+    }
+  }
+
+  &__wrapper {
+    border-radius: var(--base-border-radius);
+    padding: 0.625rem;
+    background-color: #242527;
+    display: grid;
+    grid-template-columns: minmax(0, 2fr) minmax(0, 10fr);
+    height: 100%;
+    overflow: hidden;
+    position: relative;
+
+    &--builder {
+      grid-template-columns: 6.875rem minmax(0, 2fr) minmax(0, 10fr);
+    }
+
+    &--disabled {
+      opacity: 0.5;
+      pointer-events: none;
+    }
+
+    @media screen and (max-width: 767px) {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 1.25rem;
+
+      &--builder {
+        padding-left: 3.75rem;
+      }
+    }
+  }
+
+  &__controls {
+    display: flex;
+    align-items: center;
+    gap: 5rem;
+    justify-content: flex-end;
+
+    @media screen and (max-width: 767px) {
+      gap: 1rem;
+    }
+  }
+
+  &__icon {
+    width: 2.5rem;
+    height: 2.5rem;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #38393B;
+    border-radius: 0.375rem;
+    color: #B4B5B5;
+
+    &--white {
+      color: #fff;
+    }
+
+    @media screen and (max-width: 767px) {
+      &--delete {
+        margin-left: auto;
+      }
+    }
+
+    .icon {
+      width: 1.125rem;
+      height: 1.125rem;
+    }
+  }
+
+  &__row {
+    display: grid;
+    grid-template-columns: minmax(0, 3fr) minmax(0, 2fr) minmax(0, 3fr) minmax(0, 2fr);
+    padding: 0.625rem 0;
+    height: 100%;
+    overflow: hidden;
+
+    &--small {
+      grid-template-columns: minmax(0, 2.5fr) minmax(0, 2fr) minmax(0, 2fr) minmax(0, 2fr);
+    }
+
+    &--builder {
+      overflow: auto;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      height: 100%;
+
+      &::-webkit-scrollbar {
+        width: var(--scrollbar-size);
+        height: var(--scrollbar-size);
+        background-color: var(--color-accent);
+        border-radius: 6px;
+      }
+
+      &::-webkit-scrollbar-thumb {
+        background-color: var(--color-accent);
+        border-radius: 6px;
+      }
+
+      &::-webkit-scrollbar-track {
+        background-color: #373A3F;
+        border-radius: 6px;
+      }
+
+      .product-card__block {
+        overflow: visible;
+      }
+    }
+
+    @media screen and (max-width: 767px) {
+      grid-template-columns: minmax(0, 1fr);
+      padding: 0.625rem;
+    }
+
+    @media screen and (min-width: 768px) {
+      &--small .product-card__block {
+        padding: 0 1.25rem;
+      }
+    }
+  }
+
+  &__separator {
+    display: inline-block;
+    width: 2px;
+    height: 15px;
+    background-color: rgba(255, 255, 255, 0.4);;
+    margin: 0 0.5rem;
+  }
+
+  &__block {
+    padding: 1.25rem;
+    overflow: hidden;
+    height: 100%;
+
+    .button {
+      width: 100%;
+    }
+
+    @media screen and (min-width: 768px) {
+      &--big {
+        grid-column-end: span 2;
+      }
+
+      &:not(:first-child) {
+        border-left: 1px solid rgba(255, 255, 255, 0.08);
+      }
+    }
+
+    @media screen and (max-width: 767px) {
+      padding: 1rem 0.625rem;
+
+      &:not(:last-child) {
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      }
+
+      &--mobile--clear:not(:last-child) {
+        border: none;
+      }
+    }
+  }
+
+  &__content {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    padding: 0 !important;
+    overflow-x: hidden;
+    overflow-y: auto;
+    height: 100%;
+
+    &::-webkit-scrollbar {
+      width: var(--scrollbar-size);
+      height: var(--scrollbar-size);
+      background-color: var(--color-accent);
+      border-radius: 6px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background-color: var(--color-accent);
+      border-radius: 6px;
+    }
+
+    &::-webkit-scrollbar-track {
+      background-color: #373A3F;
+      border-radius: 6px;
+    }
+
+    @media screen and (max-width: 767px) {
+      max-height: 6.25rem;
+
+      &--mobile--full {
+        max-height: 100%;
+      }
+    }
+  }
+
+  &__img {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 1.25rem;
+    background-color: #fff;
+    padding: 1.875rem 1.25rem;
+    position: relative;
+
+    @media screen and (max-width: 767px) {
+      height: 11.25rem;
+      border-radius: 0.5rem;
+      padding: 2.25rem 1rem 1.625rem 1rem;
+    }
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+
+      @media screen and (min-width: 768px) {
+        position: absolute;
+        height: calc(100% - 1.875rem);
+        width: calc(100% - 1.25rem);
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+      }
+    }
+  }
+}

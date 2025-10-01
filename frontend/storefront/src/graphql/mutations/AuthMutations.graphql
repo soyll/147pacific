@@ -1,0 +1,249 @@
+# Authentication mutations
+
+mutation RegisterUser(
+  $input: AccountRegisterInput!
+) {
+  accountRegister(input: $input) {
+    user {
+      id
+      email
+      firstName
+      lastName
+      isActive
+    }
+    errors {
+      field
+      message
+      code
+    }
+    requiresConfirmation
+  }
+}
+
+mutation LoginUser(
+  $email: String!
+  $password: String!
+) {
+  tokenCreate(email: $email, password: $password) {
+    token
+    refreshToken
+    csrfToken
+    user {
+      id
+      email
+      firstName
+      lastName
+      isActive
+    }
+    errors {
+      field
+      message
+      code
+    }
+  }
+}
+
+mutation RefreshToken(
+  $refreshToken: String!
+) {
+  tokenRefresh(refreshToken: $refreshToken) {
+    token
+    refreshToken
+    csrfToken
+    user {
+      id
+      email
+      firstName
+      lastName
+      isActive
+    }
+    errors {
+      field
+      message
+      code
+    }
+  }
+}
+
+mutation LogoutUser {
+  tokenDelete {
+    errors {
+      field
+      message
+      code
+    }
+  }
+}
+
+mutation ChangePassword(
+  $newPassword: String!
+  $oldPassword: String!
+) {
+  passwordChange(newPassword: $newPassword, oldPassword: $oldPassword) {
+    errors {
+      field
+      message
+      code
+    }
+  }
+}
+
+mutation RequestPasswordReset(
+  $email: String!
+  $redirectUrl: String!
+) {
+  requestPasswordReset(email: $email, redirectUrl: $redirectUrl) {
+    errors {
+      field
+      message
+      code
+    }
+  }
+}
+
+mutation ConfirmPasswordReset(
+  $email: String!
+  $password: String!
+  $token: String!
+) {
+  confirmPasswordReset(email: $email, password: $password, token: $token) {
+    errors {
+      field
+      message
+      code
+    }
+  }
+}
+
+mutation UpdateUserAccount(
+  $input: AccountInput!
+) {
+  accountUpdate(input: $input) {
+    user {
+      id
+      email
+      firstName
+      lastName
+      isActive
+      dateJoined
+      lastLogin
+    }
+    errors {
+      field
+      message
+      code
+    }
+  }
+}
+
+mutation DeleteUserAccount(
+  $password: String!
+) {
+  accountDelete(password: $password) {
+    errors {
+      field
+      message
+      code
+    }
+  }
+}
+
+mutation CreateUserAddress(
+  $input: AddressInput!
+  $type: AddressTypeEnum
+) {
+  accountAddressCreate(input: $input, type: $type) {
+    address {
+      ...Address
+    }
+    user {
+      id
+      email
+      firstName
+      lastName
+      addresses {
+        ...Address
+      }
+    }
+    errors {
+      field
+      message
+      code
+    }
+  }
+}
+
+mutation UpdateUserAddress(
+  $id: ID!
+  $input: AddressInput!
+) {
+  accountAddressUpdate(id: $id, input: $input) {
+    address {
+      ...Address
+    }
+    user {
+      id
+      email
+      firstName
+      lastName
+      addresses {
+        ...Address
+      }
+    }
+    errors {
+      field
+      message
+      code
+    }
+  }
+}
+
+mutation DeleteUserAddress(
+  $id: ID!
+) {
+  accountAddressDelete(id: $id) {
+    user {
+      id
+      email
+      firstName
+      lastName
+      addresses {
+        ...Address
+      }
+    }
+    errors {
+      field
+      message
+      code
+    }
+  }
+}
+
+mutation SetDefaultUserAddress(
+  $id: ID!
+  $type: AddressTypeEnum!
+) {
+  accountSetDefaultAddress(id: $id, type: $type) {
+    user {
+      id
+      email
+      firstName
+      lastName
+      defaultShippingAddress {
+        ...Address
+      }
+      defaultBillingAddress {
+        ...Address
+      }
+      addresses {
+        ...Address
+      }
+    }
+    errors {
+      field
+      message
+      code
+    }
+  }
+}
+

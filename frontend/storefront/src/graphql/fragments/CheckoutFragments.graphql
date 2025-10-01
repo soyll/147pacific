@@ -1,0 +1,423 @@
+# Checkout fragments for auto accessories
+
+fragment Address on Address {
+  id
+  firstName
+  lastName
+  companyName
+  streetAddress1
+  streetAddress2
+  city
+  cityArea
+  postalCode
+  country {
+    code
+    country
+  }
+  countryArea
+  phone
+  isDefaultBillingAddress
+  isDefaultShippingAddress
+}
+
+fragment Money on Money {
+  amount
+  currency
+}
+
+fragment TaxedMoney on TaxedMoney {
+  gross {
+    ...Money
+  }
+  net {
+    ...Money
+  }
+  tax {
+    ...Money
+  }
+}
+
+fragment ShippingMethod on ShippingMethod {
+  id
+  name
+  description
+  price {
+    ...Money
+  }
+  maximumDeliveryDays
+  minimumDeliveryDays
+}
+
+fragment CollectionPoint on CollectionPoint {
+  id
+  name
+  address {
+    ...Address
+  }
+  email
+  isPrivate
+  clickAndCollectOption
+}
+
+fragment PaymentGateway on PaymentGateway {
+  id
+  name
+  config {
+    field
+    value
+  }
+  currencies
+}
+
+fragment GiftCard on GiftCard {
+  id
+  displayCode
+  last4CodeChars
+  isActive
+  expiryDate
+  currentBalance {
+    ...Money
+  }
+}
+
+fragment MetadataItem on MetadataItem {
+  key
+  value
+}
+
+fragment CheckoutLine on CheckoutLine {
+  id
+  variant {
+    id
+    name
+    sku
+    product {
+      id
+      name
+      slug
+      thumbnail {
+        url
+        alt
+      }
+    }
+    pricing {
+      price {
+        gross {
+          amount
+          currency
+        }
+      }
+    }
+  }
+  quantity
+  totalPrice {
+    ...TaxedMoney
+  }
+  requiresShipping
+}
+
+fragment AutoAccessoryCheckoutLine on AutoAccessoryCheckoutLine {
+  id
+  variant {
+    id
+    name
+    sku
+    product {
+      id
+      name
+      slug
+      thumbnail {
+        url
+        alt
+      }
+      autoAccessoryAttributes {
+        productCategory
+        productType
+        partNumber
+        colorScheme
+        material
+      }
+    }
+    pricing {
+      price {
+        gross {
+          amount
+          currency
+        }
+      }
+    }
+  }
+  quantity
+  totalPrice {
+    ...TaxedMoney
+  }
+  requiresShipping
+  autoAccessoryCompatibility {
+    brand
+    model
+    yearRange
+    modification
+  }
+}
+
+fragment AutoAccessoryCheckout on AutoAccessoryCheckout {
+  id
+  token
+  user {
+    id
+    email
+    firstName
+    lastName
+  }
+  channel {
+    id
+    name
+    slug
+    currencyCode
+  }
+  billingAddress {
+    ...Address
+  }
+  shippingAddress {
+    ...Address
+  }
+  shippingMethod {
+    ...ShippingMethod
+  }
+  collectionPoint {
+    ...CollectionPoint
+  }
+  lines {
+    ...CheckoutLine
+  }
+  autoAccessoryLines {
+    ...AutoAccessoryCheckoutLine
+  }
+  availablePaymentGateways {
+    ...PaymentGateway
+  }
+  availableShippingMethods {
+    ...ShippingMethod
+  }
+  availableCollectionPoints {
+    ...CollectionPoint
+  }
+  email
+  discount {
+    ...Money
+  }
+  discountName
+  translatedDiscountName
+  voucherCode
+  giftCards {
+    ...GiftCard
+  }
+  isShippingRequired
+  quantity
+  stockQuantity
+  totalPrice {
+    ...TaxedMoney
+  }
+  subtotalPrice {
+    ...TaxedMoney
+  }
+  shippingPrice {
+    ...TaxedMoney
+  }
+  shippingTaxRate
+  taxExemption
+  taxNote
+  discountAmount {
+    ...Money
+  }
+  discountAmountType
+  languageCode
+  currency
+  metadata {
+    ...MetadataItem
+  }
+  privateMetadata {
+    ...MetadataItem
+  }
+  created
+  updatedAt
+  lastChange
+  redirectUrl
+  authorizeStatus
+  chargeStatus
+}
+
+fragment OrderLine on OrderLine {
+  id
+  productName
+  variantName
+  productSku
+  isShippingRequired
+  quantity
+  quantityFulfilled
+  quantityToFulfill
+  unitPrice {
+    gross {
+      amount
+      currency
+    }
+    net {
+      amount
+      currency
+    }
+  }
+  totalPrice {
+    gross {
+      amount
+      currency
+    }
+    net {
+      amount
+      currency
+    }
+  }
+  variant {
+    id
+    name
+    sku
+    product {
+      id
+      name
+      slug
+      thumbnail {
+        url
+        alt
+      }
+    }
+  }
+  thumbnail {
+    url
+    alt
+  }
+}
+
+fragment Order on Order {
+  id
+  number
+  status
+  statusDisplay
+  created
+  updatedAt
+  user {
+    id
+    email
+    firstName
+    lastName
+  }
+  channel {
+    id
+    name
+    slug
+    currencyCode
+  }
+  billingAddress {
+    ...Address
+  }
+  shippingAddress {
+    ...Address
+  }
+  shippingMethod {
+    ...ShippingMethod
+  }
+  collectionPoint {
+    ...CollectionPoint
+  }
+  lines {
+    ...OrderLine
+  }
+  total {
+    gross {
+      amount
+      currency
+    }
+    net {
+      amount
+      currency
+    }
+    tax {
+      amount
+      currency
+    }
+  }
+  subtotal {
+    gross {
+      amount
+      currency
+    }
+    net {
+      amount
+      currency
+    }
+  }
+  shippingPrice {
+    gross {
+      amount
+      currency
+    }
+    net {
+      amount
+      currency
+    }
+  }
+  discount {
+    amount
+    currency
+  }
+  discountName
+  translatedDiscountName
+  voucherCode
+  giftCards {
+    ...GiftCard
+  }
+  isShippingRequired
+  languageCode
+  currency
+  metadata {
+    ...MetadataItem
+  }
+  privateMetadata {
+    ...MetadataItem
+  }
+  redirectUrl
+  authorizeStatus
+  chargeStatus
+  fulfillments {
+    id
+    status
+    trackingNumber
+    created
+    lines {
+      id
+      quantity
+      orderLine {
+        id
+        productName
+        variantName
+        productSku
+      }
+    }
+  }
+  payments {
+    id
+    gateway
+    paymentMethodType
+    isActive
+    created
+    modified
+    chargeStatus
+    total {
+      amount
+      currency
+    }
+    capturedAmount {
+      amount
+      currency
+    }
+  }
+}
+

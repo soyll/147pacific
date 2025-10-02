@@ -29,7 +29,7 @@ services:
     networks:
       - saleor-network
     environment:
-      - API_URI=http://api:8000/graphql/
+      - API_URI=http://http://164.90.133.149/:8000/graphql/
 
   db:
     image: library/postgres:15-alpine

@@ -39,3 +39,5 @@ VITE_SALEOR_CHANNEL=online-store
 # Dashboard configuration
 DASHBOARD_URL=http://localhost:9000/
 STOREFRONT_URL=http://localhost:3000/
+
+DOMAIN=http://164.90.133.149

@@ -17,9 +17,9 @@ services:
       - backend/saleor-platform/backend.env
     environment:
       - JAEGER_AGENT_HOST=jaeger
-      - DASHBOARD_URL=http://${DOMAIN:-localhost}:9000/
-      - ALLOWED_HOSTS=*,localhost,host.docker.internal,127.0.0.1,api,${DOMAIN:-localhost}
-      - STOREFRONT_URL=http://${DOMAIN:-localhost}:3000/
+      - DASHBOARD_URL=http://dashboard:9000/
+      - ALLOWED_HOSTS=*,localhost,host.docker.internal,127.0.0.1,api
+      - STOREFRONT_URL=http://storefront:3000/
 
   dashboard:
     image: ghcr.io/saleor/saleor-dashboard:latest
@@ -29,7 +29,7 @@ services:
     networks:
       - saleor-network
     environment:
-      - API_URL=http://${DOMAIN:-localhost}:8000/graphql/
+      - API_URL=http://api:8000/graphql/
 
   db:
     image: library/postgres:15-alpine
@@ -108,8 +108,8 @@ services:
       - saleor-network
     environment:
       - SALEOR_API_URL=http://api:8000/graphql/
-      - SALEOR_EMAIL=admin@147pacific.com
-      - SALEOR_PASSWORD=p@ci147fiC@cCe$$orRy
+      - SALEOR_EMAIL=${SALEOR_EMAIL}
+      - SALEOR_PASSWORD=${SALEOR_PASSWORD}
       - SALEOR_API_TOKEN=${SALEOR_API_TOKEN:-}
     depends_on:
       - api

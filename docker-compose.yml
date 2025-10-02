@@ -13,6 +13,7 @@ services:
     volumes:
       - saleor-media:/app/media
     env_file:
+      - env
       - backend/saleor-platform/common.env
       - backend/saleor-platform/backend.env
     environment:
@@ -28,6 +29,8 @@ services:
     restart: unless-stopped
     networks:
       - saleor-network
+    env_file:
+      - env
     environment:
       - API_URI=http://${DOMAIN:-localhost}:8000/graphql/
 
@@ -138,6 +141,8 @@ services:
     restart: unless-stopped
     networks:
       - saleor-network
+    env_file:
+      - env
     environment:
       - VITE_SALEOR_API_URL=http://${DOMAIN:-localhost}:8000/graphql/
       - VITE_SALEOR_CHANNEL=online-store

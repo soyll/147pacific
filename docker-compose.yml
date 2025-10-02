@@ -17,9 +17,9 @@ services:
       - backend/saleor-platform/backend.env
     environment:
       - JAEGER_AGENT_HOST=jaeger
-      - DASHBOARD_URL=http://localhost:9000/
+      - DASHBOARD_URL=http://164.90.133.149:9000
       - ALLOWED_HOSTS=*,localhost,host.docker.internal,127.0.0.1,api,${DOMAIN:-localhost}
-      - STOREFRONT_URL=http://localhost:3000/
+      - STOREFRONT_URL=http://164.90.133.149:3000/
 
   dashboard:
     image: ghcr.io/saleor/saleor-dashboard:latest
@@ -29,7 +29,7 @@ services:
     networks:
       - saleor-network
     environment:
-      - API_URI=http://http://164.90.133.149/:8000/graphql/
+      - API_URI=http://164.90.133.149:8000/graphql/
 
   db:
     image: library/postgres:15-alpine

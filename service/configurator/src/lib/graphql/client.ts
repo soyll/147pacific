@@ -75,7 +75,8 @@ export const authenticate = async () => {
   logger.debug('Sending authentication request', {
     url: SALEOR_API_URL,
     email: SALEOR_EMAIL,
-    mutation: loginMutation.trim()
+    mutation: loginMutation.trim(),
+    fullRequestBody: requestBody
   });
 
   try {
@@ -96,13 +97,20 @@ export const authenticate = async () => {
       }
     });
 
-    const result = await response.json();
+    // Log raw response text before parsing
+    const responseText = await response.text();
+    logger.debug('Raw response text', {
+      responseText: responseText
+    });
+
+    const result = JSON.parse(responseText);
     
     logger.debug('Authentication response body', {
       hasData: !!result.data,
       hasToken: !!result.data?.tokenCreate?.token,
       hasErrors: !!result.data?.tokenCreate?.errors,
-      errors: result.data?.tokenCreate?.errors
+      errors: result.data?.tokenCreate?.errors,
+      fullResponse: result
     });
     
     if (result.data?.tokenCreate?.token) {

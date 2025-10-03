@@ -29,7 +29,7 @@ services:
     networks:
       - saleor-network
     environment:
-      - API_URL=http://${DOMAIN:-localhost}:8000/graphql/
+      - VITE_SALEOR_API_URL=http://${DOMAIN:-localhost}:8000/graphql/
 
   db:
     image: library/postgres:15-alpine

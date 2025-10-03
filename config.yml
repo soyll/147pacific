@@ -1,0 +1,429 @@
+shop:
+  customerAllowedToSetExternalReference: false
+  defaultMailSenderName: "147 Pacific Auto Accessories"
+  defaultMailSenderAddress: "orders@147pacific.com"
+  displayGrossPrices: true
+  enableAccountConfirmationByEmail: true
+  limitQuantityPerCheckout: 50
+  trackInventoryByDefault: true
+  reserveStockDurationAnonymousUser: 60
+  reserveStockDurationAuthenticatedUser: 120
+  defaultWeightUnit: "KG"
+  allowLoginWithoutConfirmation: false
+
+channels:
+  - name: Online Store
+    currencyCode: "USD"
+    defaultCountry: "US"
+    slug: "online-store"
+    isActive: true
+    settings:
+      allocationStrategy: "PRIORITIZE_SORTING_ORDER"
+      automaticallyConfirmAllNewOrders: true
+      automaticallyFulfillNonShippableGiftCard: true
+      expireOrdersAfter: 30
+      deleteExpiredOrdersAfter: 60
+      markAsPaidStrategy: "TRANSACTION_FLOW"
+      allowUnpaidOrders: false
+      includeDraftOrderInVoucherUsage: true
+      useLegacyErrorFlow: false
+      automaticallyCompleteFullyPaidCheckouts: true
+      defaultTransactionFlowStrategy: "AUTHORIZATION"
+
+productTypes:
+  # Product Type: Кунг (Bed Rack)
+  - name: "Bed Rack"
+    hasVariants: true
+    isShippingRequired: true
+    weight: "0.0"
+    taxClass: "standard"
+    attributes:
+      - name: "Vehicle Compatibility"
+        inputType: "MULTISELECT"
+        values:
+          - name: "GMC / CANYON 2023-2025 / 5FT"
+          - name: "CHEVROLET / COLORADO 2023-2025 / 5FT"
+          - name: "FORD / F-150 2021-2025 / 5.5FT"
+          - name: "FORD / F-150 2021-2025 / 6.5FT"
+          - name: "FORD / F-150 2021-2025 / 8FT"
+          - name: "CHEVROLET / SILVERADO 2019-2025 / 5.8FT"
+          - name: "CHEVROLET / SILVERADO 2019-2025 / 6.6FT"
+          - name: "CHEVROLET / SILVERADO 2019-2025 / 8FT"
+          - name: "GMC / SIERRA 2019-2025 / 5.8FT"
+          - name: "GMC / SIERRA 2019-2025 / 6.6FT"
+          - name: "GMC / SIERRA 2019-2025 / 8FT"
+          - name: "RAM / 1500 2019-2025 / 5.7FT"
+          - name: "RAM / 1500 2019-2025 / 6.4FT"
+          - name: "RAM / 1500 2019-2025 / 8FT"
+      - name: "Color Scheme"
+        inputType: "DROPDOWN"
+        values:
+          - name: "POWDER COATED BLACK ALUMINUM BASES AND BARS, POLISHED STAINLESS FIXTURE PIPES, STAINLESS HARDWARE"
+          - name: "POWDER COATED BLACK ALUMINUM BASES AND BARS, POWDER COATED BLACK STAINLESS FIXTURE PIPES, STAINLESS HARDWARE"
+          - name: "POLISHED ALUMINUM BASES AND BARS, POLISHED STAINLESS FIXTURE PIPES, STAINLESS HARDWARE"
+          - name: "POWDER COATED WHITE ALUMINUM BASES AND BARS, POLISHED STAINLESS FIXTURE PIPES, STAINLESS HARDWARE"
+      - name: "Material"
+        inputType: "DROPDOWN"
+        values:
+          - name: "Aluminum"
+          - name: "Steel"
+          - name: "Stainless Steel"
+      - name: "Load Capacity"
+        inputType: "DROPDOWN"
+        values:
+          - name: "500 lbs"
+          - name: "750 lbs"
+          - name: "1000 lbs"
+          - name: "1500 lbs"
+      - name: "Installation Type"
+        inputType: "DROPDOWN"
+        values:
+          - name: "Direct Mount"
+          - name: "Clamp Mount"
+          - name: "Bolt-On"
+
+  # Product Type: Кенгурятник (Bull Bar)
+  - name: "Bull Bar"
+    hasVariants: true
+    isShippingRequired: true
+    weight: "0.0"
+    taxClass: "standard"
+    attributes:
+      - name: "Vehicle Compatibility"
+        inputType: "MULTISELECT"
+        values:
+          - name: "FORD / F-150 2021-2025"
+          - name: "FORD / F-250 2020-2025"
+          - name: "FORD / F-350 2020-2025"
+          - name: "CHEVROLET / SILVERADO 2019-2025"
+          - name: "GMC / SIERRA 2019-2025"
+          - name: "RAM / 1500 2019-2025"
+          - name: "RAM / 2500 2019-2025"
+          - name: "RAM / 3500 2019-2025"
+          - name: "TOYOTA / TUNDRA 2022-2025"
+          - name: "NISSAN / TITAN 2020-2025"
+      - name: "Color Scheme"
+        inputType: "DROPDOWN"
+        values:
+          - name: "POWDER COATED BLACK STEEL"
+          - name: "POWDER COATED WHITE STEEL"
+          - name: "POLISHED STAINLESS STEEL"
+          - name: "POWDER COATED GRAY STEEL"
+      - name: "Material"
+        inputType: "DROPDOWN"
+        values:
+          - name: "Steel"
+          - name: "Stainless Steel"
+          - name: "Aluminum"
+      - name: "Tube Diameter"
+        inputType: "DROPDOWN"
+        values:
+          - name: "2 inch"
+          - name: "2.5 inch"
+          - name: "3 inch"
+      - name: "Light Mounting"
+        inputType: "BOOLEAN"
+      - name: "Winch Compatible"
+        inputType: "BOOLEAN"
+
+  # Product Type: Кенгурятник HD (HD Grille Guard)
+  - name: "HD Grille Guard"
+    hasVariants: true
+    isShippingRequired: true
+    weight: "0.0"
+    taxClass: "standard"
+    attributes:
+      - name: "Vehicle Compatibility"
+        inputType: "MULTISELECT"
+        values:
+          - name: "FORD / F-450 2020-2025"
+          - name: "FORD / F-550 2020-2025"
+          - name: "CHEVROLET / SILVERADO 4500HD 2020-2025"
+          - name: "CHEVROLET / SILVERADO 5500HD 2020-2025"
+          - name: "GMC / SIERRA 4500HD 2020-2025"
+          - name: "GMC / SIERRA 5500HD 2020-2025"
+          - name: "RAM / 4500 2020-2025"
+          - name: "RAM / 5500 2020-2025"
+          - name: "INTERNATIONAL / MV 2020-2025"
+          - name: "FREIGHTLINER / BUSINESS CLASS 2020-2025"
+      - name: "Color Scheme"
+        inputType: "DROPDOWN"
+        values:
+          - name: "POWDER COATED BLACK STEEL"
+          - name: "POWDER COATED WHITE STEEL"
+          - name: "POLISHED STAINLESS STEEL"
+          - name: "POWDER COATED YELLOW STEEL"
+      - name: "Material"
+        inputType: "DROPDOWN"
+        values:
+          - name: "Heavy Duty Steel"
+          - name: "Stainless Steel"
+          - name: "Galvanized Steel"
+      - name: "Tube Diameter"
+        inputType: "DROPDOWN"
+        values:
+          - name: "3 inch"
+          - name: "3.5 inch"
+          - name: "4 inch"
+      - name: "Load Rating"
+        inputType: "DROPDOWN"
+        values:
+          - name: "10,000 lbs"
+          - name: "15,000 lbs"
+          - name: "20,000 lbs"
+      - name: "Light Mounting"
+        inputType: "BOOLEAN"
+      - name: "Winch Compatible"
+        inputType: "BOOLEAN"
+
+  # Product Type: Порог (Running Board)
+  - name: "Running Board"
+    hasVariants: true
+    isShippingRequired: true
+    weight: "0.0"
+    taxClass: "standard"
+    attributes:
+      - name: "Vehicle Compatibility"
+        inputType: "MULTISELECT"
+        values:
+          - name: "FORD / F-150 2021-2025 / CREW CAB"
+          - name: "FORD / F-150 2021-2025 / SUPER CREW"
+          - name: "FORD / F-250 2020-2025 / CREW CAB"
+          - name: "FORD / F-250 2020-2025 / SUPER CREW"
+          - name: "CHEVROLET / SILVERADO 2019-2025 / CREW CAB"
+          - name: "CHEVROLET / SILVERADO 2019-2025 / DOUBLE CAB"
+          - name: "GMC / SIERRA 2019-2025 / CREW CAB"
+          - name: "GMC / SIERRA 2019-2025 / DOUBLE CAB"
+          - name: "RAM / 1500 2019-2025 / CREW CAB"
+          - name: "RAM / 1500 2019-2025 / QUAD CAB"
+          - name: "RAM / 2500 2019-2025 / CREW CAB"
+          - name: "RAM / 2500 2019-2025 / QUAD CAB"
+      - name: "Color Scheme"
+        inputType: "DROPDOWN"
+        values:
+          - name: "POWDER COATED BLACK ALUMINUM"
+          - name: "POWDER COATED WHITE ALUMINUM"
+          - name: "POLISHED ALUMINUM"
+          - name: "POWDER COATED GRAY ALUMINUM"
+      - name: "Material"
+        inputType: "DROPDOWN"
+        values:
+          - name: "Aluminum"
+          - name: "Steel"
+          - name: "Stainless Steel"
+      - name: "Style"
+        inputType: "DROPDOWN"
+        values:
+          - name: "Tube Style"
+          - name: "Board Style"
+          - name: "Nerf Bar"
+          - name: "Power Running Board"
+      - name: "Length"
+        inputType: "DROPDOWN"
+        values:
+          - name: "60 inches"
+          - name: "72 inches"
+          - name: "84 inches"
+          - name: "96 inches"
+      - name: "Weight Capacity"
+        inputType: "DROPDOWN"
+        values:
+          - name: "300 lbs"
+          - name: "500 lbs"
+          - name: "750 lbs"
+
+  # Product Type: SubAccessory (для всех типов аксессуаров)
+  - name: "SubAccessory"
+    hasVariants: true
+    isShippingRequired: true
+    weight: "0.0"
+    taxClass: "standard"
+    attributes:
+      - name: "Compatible Accessories"
+        inputType: "MULTISELECT"
+        values:
+          - name: "Bed Rack R-G822-PXXX-B"
+          - name: "Bed Rack R-G823-PXXX-B"
+          - name: "Bed Rack R-G824-PXXX-B"
+          - name: "Bull Bar B-F150-2021-B"
+          - name: "Bull Bar B-SILV-2019-B"
+          - name: "HD Grille Guard HD-F450-2020-B"
+          - name: "HD Grille Guard HD-RAM5500-2020-B"
+          - name: "Running Board RB-F150-2021-B"
+          - name: "Running Board RB-SILV-2019-B"
+      - name: "Color Scheme"
+        inputType: "DROPDOWN"
+        values:
+          - name: "POWDER COATED BLACK ALUMINUM"
+          - name: "POLISHED STAINLESS"
+          - name: "POWDER COATED WHITE ALUMINUM"
+          - name: "POWDER COATED GRAY ALUMINUM"
+      - name: "Material"
+        inputType: "DROPDOWN"
+        values:
+          - name: "Aluminum"
+          - name: "Steel"
+          - name: "Stainless Steel"
+      - name: "SubAccessory Type"
+        inputType: "DROPDOWN"
+        values:
+          - name: "Panel Kit"
+          - name: "Light Mount"
+          - name: "Tie Down Point"
+          - name: "Extension Kit"
+          - name: "Reinforcement Kit"
+          - name: "Cover Kit"
+      - name: "Installation Required"
+        inputType: "BOOLEAN"
+
+pageTypes:
+  - name: "Product Information"
+    attributes:
+      - name: "Installation Guide"
+        inputType: "FILE"
+      - name: "Technical Specifications"
+        inputType: "RICH_TEXT"
+      - name: "Warranty Information"
+        inputType: "RICH_TEXT"
+      - name: "Compatibility Chart"
+        inputType: "FILE"
+      - name: "Installation Video"
+        inputType: "PLAIN_TEXT"
+
+  - name: "Blog Post"
+    attributes:
+      - name: "Author"
+        inputType: "PLAIN_TEXT"
+      - name: "Publish Date"
+        inputType: "DATE"
+      - name: "Category"
+        inputType: "DROPDOWN"
+        values:
+          - name: "Installation"
+          - name: "Product Reviews"
+          - name: "Vehicle Compatibility"
+          - name: "Maintenance"
+          - name: "News"
+      - name: "Tags"
+        inputType: "MULTISELECT"
+        values:
+          - name: "Truck Accessories"
+          - name: "Installation"
+          - name: "Reviews"
+          - name: "Compatibility"
+          - name: "Maintenance"
+      - name: "Featured Image"
+        inputType: "FILE"
+
+  - name: "FAQ"
+    attributes:
+      - name: "FAQ Topic"
+        inputType: "DROPDOWN"
+        values:
+          - name: "Installation"
+          - name: "Compatibility"
+          - name: "Shipping"
+          - name: "Warranty"
+          - name: "Returns"
+          - name: "Payment"
+      - name: "FAQ Audience"
+        inputType: "DROPDOWN"
+        values:
+          - name: "New Customers"
+          - name: "Installers"
+          - name: "Dealers"
+          - name: "General"
+
+# Примеры продуктов
+products:
+  # Bed Rack Example
+  - name: "Bed Rack R-G822-PXXX-B"
+    description: "Heavy-duty bed rack system for pickup trucks. Provides secure mounting points for additional accessories and cargo protection."
+    productType: "Bed Rack"
+    category: "Truck Accessories"
+    attributes:
+      - attribute: "Vehicle Compatibility"
+        values: ["GMC / CANYON 2023-2025 / 5FT", "CHEVROLET / COLORADO 2023-2025 / 5FT"]
+      - attribute: "Color Scheme"
+        values: ["POWDER COATED BLACK ALUMINUM BASES AND BARS, POLISHED STAINLESS FIXTURE PIPES, STAINLESS HARDWARE"]
+      - attribute: "Material"
+        values: ["Aluminum"]
+      - attribute: "Load Capacity"
+        values: ["1000 lbs"]
+    channelListings:
+      - channelSlug: "online-store"
+        isPublished: true
+        visibleInListings: true
+    variants:
+      - sku: "R-G822-P001-B"
+        name: "Bed Rack R-G822-P001-B - Black/Polished"
+        channelListings:
+          - channelSlug: "online-store"
+            price: "899.00"
+            costPrice: "450.00"
+      - sku: "R-G822-P002-B"
+        name: "Bed Rack R-G822-P002-B - Black/Black"
+        channelListings:
+          - channelSlug: "online-store"
+            price: "899.00"
+            costPrice: "450.00"
+
+  # SubAccessory Example
+  - name: "Bed Rack Panel Kit R-G822-P22X-B"
+    description: "Panel kit for Bed Rack R-G822-PXXX-B. Provides additional cargo protection and mounting options."
+    productType: "SubAccessory"
+    category: "Truck Accessories"
+    attributes:
+      - attribute: "Compatible Accessories"
+        values: ["Bed Rack R-G822-PXXX-B"]
+      - attribute: "Color Scheme"
+        values: ["POWDER COATED BLACK ALUMINUM"]
+      - attribute: "Material"
+        values: ["Aluminum"]
+      - attribute: "SubAccessory Type"
+        values: ["Panel Kit"]
+    channelListings:
+      - channelSlug: "online-store"
+        isPublished: true
+        visibleInListings: true
+    variants:
+      - sku: "R-G822-P22X-B001"
+        name: "Panel Kit R-G822-P22X-B001 - Black"
+        channelListings:
+          - channelSlug: "online-store"
+            price: "199.00"
+            costPrice: "100.00"
+      - sku: "R-G822-P22X-B002"
+        name: "Panel Kit R-G822-P22X-B002 - Polished"
+        channelListings:
+          - channelSlug: "online-store"
+            price: "229.00"
+            costPrice: "115.00"
+
+  # Bull Bar Example
+  - name: "Bull Bar B-F150-2021-B"
+    description: "Heavy-duty bull bar for Ford F-150 2021-2025. Provides front-end protection and mounting points for lights."
+    productType: "Bull Bar"
+    category: "Truck Accessories"
+    attributes:
+      - attribute: "Vehicle Compatibility"
+        values: ["FORD / F-150 2021-2025"]
+      - attribute: "Color Scheme"
+        values: ["POWDER COATED BLACK STEEL"]
+      - attribute: "Material"
+        values: ["Steel"]
+      - attribute: "Tube Diameter"
+        values: ["2.5 inch"]
+      - attribute: "Light Mounting"
+        values: ["true"]
+    channelListings:
+      - channelSlug: "online-store"
+        isPublished: true
+        visibleInListings: true
+    variants:
+      - sku: "B-F150-2021-B001"
+        name: "Bull Bar B-F150-2021-B001 - Black"
+        channelListings:
+          - channelSlug: "online-store"
+            price: "599.00"
+            costPrice: "300.00"

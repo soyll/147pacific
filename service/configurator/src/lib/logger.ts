@@ -11,6 +11,7 @@ export const logger = new Logger({
   prettyErrorLoggerNameDelimiter: '',
   stylePrettyLogs: true,
   prettyLogTimeZone: 'local',
+  maskValuesOfKeys: [],
   prettyLogStyles: {
     logLevelName: {
       '*': ['bold', 'black', 'bgWhiteBright', 'dim'],

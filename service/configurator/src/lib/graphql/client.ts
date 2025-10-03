@@ -1,4 +1,5 @@
 import { createClient, fetchExchange } from '@urql/core';
+import { logger } from '../logger';
 
 // Get Saleor API URL from environment variables
 const SALEOR_API_URL = process.env.SALEOR_API_URL;
@@ -60,6 +61,11 @@ export const authenticate = async () => {
 
 // Helper function to set authorization header
 export const setAuthToken = (token: string) => {
+  logger.debug('Setting authorization token', {
+    tokenLength: token.length,
+    tokenPrefix: token.substring(0, 10) + '...'
+  });
+  
   graphqlClient.fetchOptions = {
     ...graphqlClient.fetchOptions,
     headers: {
@@ -67,6 +73,10 @@ export const setAuthToken = (token: string) => {
       'Authorization': `Bearer ${token}`,
     },
   };
+  
+  logger.debug('Authorization token set successfully', {
+    headers: graphqlClient.fetchOptions?.headers
+  });
 };
 
 // Helper function to clear authorization header

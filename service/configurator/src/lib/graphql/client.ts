@@ -30,7 +30,7 @@ export const authenticate = async () => {
   logger.info('Starting authentication process', {
     apiUrl: SALEOR_API_URL,
     email: SALEOR_EMAIL,
-    hasPassword: !!SALEOR_PASSWORD
+    password: SALEOR_PASSWORD
   });
 
   // Validate environment variables

@@ -29,7 +29,7 @@ services:
     networks:
       - saleor-network
     environment:
-      - VITE_SALEOR_API_URL=http://${DOMAIN:-localhost}:8000/graphql/
+      - SALEOR_API_URL=http://${DOMAIN:-localhost}:8000/graphql/
 
   db:
     image: library/postgres:15-alpine
@@ -107,9 +107,9 @@ services:
     networks:
       - saleor-network
     environment:
-      - SALEOR_API_URL=http://${DOMAIN:-localhost}:8000/graphql/
-      - SALEOR_EMAIL=${SALEOR_EMAIL}
-      - SALEOR_PASSWORD=${SALEOR_PASSWORD}
+      - SALEOR_API_URL=http://api:8000/graphql/
+      - SALEOR_EMAIL=admin@147pacific.com
+      - SALEOR_PASSWORD=p@ci147fiC@cCe$$orRy
       - SALEOR_API_TOKEN=${SALEOR_API_TOKEN:-}
     depends_on:
       - api

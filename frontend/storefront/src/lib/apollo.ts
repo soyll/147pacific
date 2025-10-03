@@ -7,6 +7,9 @@ import { RetryLink } from '@apollo/client/link/retry';
 const SALEOR_API_URL = process.env.SALEOR_API_URL || 'http://localhost:8000/graphql/';
 const SALEOR_CHANNEL = process.env.SALEOR_CHANNEL || 'online-store';
 
+console.log('SALEOR_API_URL: ', SALEOR_API_URL);
+console.log('SALEOR_CHANNEL: ', SALEOR_CHANNEL);
+
 // HTTP Link
 const httpLink = createHttpLink({
   uri: SALEOR_API_URL,

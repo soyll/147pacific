@@ -19,6 +19,12 @@ export const graphqlClient = createClient({
 
 // Login and get token
 export const authenticate = async () => {
+  logger.info('Starting authentication process', {
+    apiUrl: SALEOR_API_URL,
+    email: SALEOR_EMAIL,
+    hasPassword: !!SALEOR_PASSWORD
+  });
+
   const loginMutation = `
     mutation TokenCreate($email: String!, $password: String!) {
       tokenCreate(email: $email, password: $password) {
@@ -49,6 +55,11 @@ export const authenticate = async () => {
     const result = await response.json();
     
     if (result.data?.tokenCreate?.token) {
+      logger.info('Authentication successful', {
+        tokenLength: result.data.tokenCreate.token.length,
+        tokenPrefix: result.data.tokenCreate.token.substring(0, 10) + '...'
+      });
+      
       setAuthToken(result.data.tokenCreate.token);
       return result.data.tokenCreate.token;
     } else {
@@ -66,13 +77,20 @@ export const setAuthToken = (token: string) => {
     tokenPrefix: token.substring(0, 10) + '...'
   });
   
-  graphqlClient.fetchOptions = {
-    ...graphqlClient.fetchOptions,
-    headers: {
-      ...graphqlClient.fetchOptions?.headers,
-      'Authorization': `Bearer ${token}`,
+  // Create a new client with the token
+  const newClient = createClient({
+    url: SALEOR_API_URL,
+    exchanges: [fetchExchange],
+    fetchOptions: {
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
     },
-  };
+  });
+  
+  // Replace the global client
+  Object.assign(graphqlClient, newClient);
   
   logger.debug('Authorization token set successfully', {
     headers: graphqlClient.fetchOptions?.headers

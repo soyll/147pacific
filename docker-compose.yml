@@ -107,7 +107,7 @@ services:
     networks:
       - saleor-network
     environment:
-      - SALEOR_API_URL=http://api:8000/graphql/
+      - SALEOR_API_URL=http://${DOMAIN:-localhost}:8000/graphql/
       - SALEOR_EMAIL=admin@147pacific.com
       - SALEOR_PASSWORD=p@ci147fiC@cCe$$orRy
       - SALEOR_API_TOKEN=${SALEOR_API_TOKEN:-}

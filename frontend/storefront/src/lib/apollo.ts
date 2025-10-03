@@ -4,8 +4,8 @@ import { onError } from '@apollo/client/link/error';
 import { RetryLink } from '@apollo/client/link/retry';
 
 // Environment variables
-const SALEOR_API_URL = process.env.SALEOR_API_URL || 'http://localhost:8000/graphql/';
-const SALEOR_CHANNEL = process.env.SALEOR_CHANNEL || 'online-store';
+const SALEOR_API_URL = process.env.SALEOR_API_URL;
+const SALEOR_CHANNEL = process.env.SALEOR_CHANNEL;
 
 console.log('SALEOR_API_URL: ', SALEOR_API_URL);
 console.log('SALEOR_CHANNEL: ', SALEOR_CHANNEL);

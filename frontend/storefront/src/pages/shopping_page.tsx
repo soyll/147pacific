@@ -57,8 +57,8 @@ export const ShoppingPage: React.FC = React.memo(() => {
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
 
   const handleCategoryChange = (category: string, checked: boolean) => {
-    setSelectedCategories(prev => 
-      checked 
+    setSelectedCategories(prev =>
+      checked
         ? [...prev, category]
         : prev.filter(cat => cat !== category)
     );
@@ -86,7 +86,7 @@ export const ShoppingPage: React.FC = React.memo(() => {
   return (
     <main className="content">
       <div className="content__wrapper">
-        <HeroSection 
+        <HeroSection
           slides={heroSlides}
         />
         <div className="section">
@@ -96,7 +96,7 @@ export const ShoppingPage: React.FC = React.memo(() => {
                 <div className="shopping__wrapper">
                   <form className={`shopping-filter ${isFilterOpen ? 'active' : ''}`} id="shopping-filter">
                     <div className="shopping-filter__mobile">
-                      <button 
+                      <button
                         type="button"
                         className="shopping-filter__header"
                         onClick={() => setIsFilterOpen(!isFilterOpen)}
@@ -135,7 +135,7 @@ export const ShoppingPage: React.FC = React.memo(() => {
                         </div>
                       </div>
                     </div>
-                    
+
                     <div className="shopping-filter__wrapper">
                       <div className="shopping-filter__main">
                         <div className="shopping-filter__grid">
@@ -157,7 +157,7 @@ export const ShoppingPage: React.FC = React.memo(() => {
                               </div>
                             </div>
                           </div>
-                          
+
                           <div className="input-row">
                             <p className="input-row__title">
                               Car model
@@ -176,7 +176,7 @@ export const ShoppingPage: React.FC = React.memo(() => {
                               </div>
                             </div>
                           </div>
-                          
+
                           <div className="input-row">
                             <p className="input-row__title">
                               Car release year
@@ -196,7 +196,7 @@ export const ShoppingPage: React.FC = React.memo(() => {
                             </div>
                           </div>
                         </div>
-                        
+
                         <div className="shopping-filter__row">
                           <div className="shopping-filter__checkbox">
                             <Checkbox
@@ -224,7 +224,7 @@ export const ShoppingPage: React.FC = React.memo(() => {
                               HD Grille Guard
                             </Checkbox>
                           </div>
-                          
+
                           <div className="shopping-filter__sort">
                             <div className="input-row">
                               <p className="input-row__title">
@@ -248,7 +248,7 @@ export const ShoppingPage: React.FC = React.memo(() => {
                               </div>
                             </div>
                           </div>
-                          
+
                           <button type="submit" className="shopping-filter__button button button--center button--text">
                             <span className="button__text">apply</span>
                             <svg className="button__icon">
@@ -259,7 +259,7 @@ export const ShoppingPage: React.FC = React.memo(() => {
                       </div>
                     </div>
                   </form>
-                  
+
                   <div className="product-list">
                     {loading ? (
                       <div style={{ textAlign: 'center', padding: '2rem' }}>
@@ -269,18 +269,21 @@ export const ShoppingPage: React.FC = React.memo(() => {
                       <div style={{ textAlign: 'center', padding: '2rem' }}>
                         <p className="text text--base">Error loading products: {error.message}</p>
                       </div>
-                            ) : (
-                              products.map((product: any) => (
-                                <ProductRow
-                                  key={product.id}
-                                  product={product}
-                                  variant="default"
-                                  onBuild={handleBuildClick}
-                                />
-                              ))
-                            )}
+                    ) : (
+                      products.map((product: any) => (
+                        <>
+                          <span>{product.id}</span>
+                          <ProductRow
+                            key={product.id}
+                            product={product}
+                            variant="default"
+                            onBuild={handleBuildClick}
+                          />
+                        </>
+                      ))
+                    )}
                   </div>
-                  
+
                   <a href="#" className="button button--text button--center">
                     <span className="button__text">more products</span>
                     <svg className="button__icon">

@@ -27,6 +27,22 @@ export const HeroSection: React.FC<HeroSectionProps> = React.memo(({
 }) => {
   const [heroNavSwiper, setHeroNavSwiper] = useState<SwiperType | null>(null);
   const [activeSlideIndex, setActiveSlideIndex] = useState(0);
+  const [indicatorPosition, setIndicatorPosition] = useState({ left: 0, width: 0 });
+
+  const updateIndicatorPosition = (slideIndex: number) => {
+    if (heroNavSwiper) {
+      const activeSlide = heroNavSwiper.slides[slideIndex];
+      if (activeSlide) {
+        const slideRect = activeSlide.getBoundingClientRect();
+        const containerRect = heroNavSwiper.el.getBoundingClientRect();
+        
+        setIndicatorPosition({
+          left: slideRect.left - containerRect.left,
+          width: slideRect.width
+        });
+      }
+    }
+  };
 
   return (
     <div className="hero">
@@ -39,7 +55,10 @@ export const HeroSection: React.FC<HeroSectionProps> = React.memo(({
           slidesPerView={1}
           loop={true}
           thumbs={{ swiper: heroNavSwiper && !heroNavSwiper.destroyed ? heroNavSwiper : null }}
-          onSlideChange={(swiper) => setActiveSlideIndex(swiper.realIndex)}
+          onSlideChange={(swiper) => {
+            setActiveSlideIndex(swiper.realIndex);
+            updateIndicatorPosition(swiper.realIndex);
+          }}
         >
           {slides.map((slide) => (
             <SwiperSlide key={slide.id} className="hero-item">
@@ -72,11 +91,19 @@ export const HeroSection: React.FC<HeroSectionProps> = React.memo(({
                 <Swiper
                   modules={[FreeMode]}
                   className="swiper hero-nav__slider"
-                  onSwiper={setHeroNavSwiper}
+                  onSwiper={(swiper) => {
+                    setHeroNavSwiper(swiper);
+                    // Обновляем позицию индикатора после инициализации
+                    setTimeout(() => updateIndicatorPosition(activeSlideIndex), 100);
+                  }}
                   spaceBetween={16}
                   slidesPerView="auto"
                   freeMode={true}
                   watchSlidesProgress={true}
+                  onSlideChange={() => {
+                    // Обновляем позицию при прокрутке навигации
+                    setTimeout(() => updateIndicatorPosition(activeSlideIndex), 50);
+                  }}
                   breakpoints={{
                     768: {
                       slidesPerView: 4,
@@ -103,8 +130,8 @@ export const HeroSection: React.FC<HeroSectionProps> = React.memo(({
                   <div 
                     className="hero-nav__indicator"
                     style={{
-                      transform: `translateX(${activeSlideIndex * 100}%)`,
-                      width: `${100 / slides.length}%`
+                      left: `${indicatorPosition.left}px`,
+                      width: `${indicatorPosition.width}px`
                     }}
                   ></div>
                 </div>

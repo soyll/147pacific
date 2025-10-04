@@ -88,7 +88,7 @@ export const HeroSection: React.FC<HeroSectionProps> = React.memo(({
                     }
                   }}
                 >
-                  {slides.map((slide, index) => (
+                  {slides.map((slide, _) => (
                     <SwiperSlide key={slide.id} className="hero-nav__item">
                       <p className="hero-nav__title">
                         {slide.title}

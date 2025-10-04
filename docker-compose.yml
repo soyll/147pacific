@@ -18,7 +18,7 @@ services:
     environment:
       - JAEGER_AGENT_HOST=jaeger
       - DASHBOARD_URL=http://${DOMAIN:-localhost}:9000/
-      - ALLOWED_HOSTS=*,localhost,host.docker.internal,127.0.0.1,api
+      - ALLOWED_HOSTS=localhost,host.docker.internal,127.0.0.1,api,storefront
       - STOREFRONT_URL=http://${DOMAIN:-localhost}:3000/
 
   dashboard:

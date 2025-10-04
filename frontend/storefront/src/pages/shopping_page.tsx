@@ -83,7 +83,7 @@ export const ShoppingPage: React.FC = React.memo(() => {
     models: edge.node.variants?.map((variant: any) => variant.sku) || []
   })) || [];
 
-  console.log('products: ', data.products.edges);
+  console.log('products: ', data?.products?.edges);
 
   return (
     <main className="content">

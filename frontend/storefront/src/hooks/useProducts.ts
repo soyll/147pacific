@@ -107,11 +107,7 @@ export const useBedRackProducts = (variables: AutoAccessoryProductsVariables = {
     variables: {
       first: 20,
       channel: 'online-store',
-      filter: {
-        productType: 'ACCESSORY',
-        category: 'BED_RACK',
-        ...variables.filter
-      },
+      // Убираем неправильные поля фильтра, используем только стандартные поля Saleor
       ...variables
     },
     notifyOnNetworkStatusChange: true,
@@ -124,11 +120,6 @@ export const useBullBarProducts = (variables: AutoAccessoryProductsVariables = {
     variables: {
       first: 20,
       channel: 'online-store',
-      filter: {
-        productType: 'ACCESSORY',
-        category: 'BULL_BAR',
-        ...variables.filter
-      },
       ...variables
     },
     notifyOnNetworkStatusChange: true,
@@ -141,11 +132,6 @@ export const useHDGrilleGuardProducts = (variables: AutoAccessoryProductsVariabl
     variables: {
       first: 20,
       channel: 'online-store',
-      filter: {
-        productType: 'ACCESSORY',
-        category: 'HD_GRILLE_GUARD',
-        ...variables.filter
-      },
       ...variables
     },
     notifyOnNetworkStatusChange: true,
@@ -158,11 +144,6 @@ export const useRunningBoardProducts = (variables: AutoAccessoryProductsVariable
     variables: {
       first: 20,
       channel: 'online-store',
-      filter: {
-        productType: 'ACCESSORY',
-        category: 'RUNNING_BOARD',
-        ...variables.filter
-      },
       ...variables
     },
     notifyOnNetworkStatusChange: true,

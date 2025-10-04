@@ -9,7 +9,7 @@ query GetAutoAccessoryProducts(
   $sortBy: ProductOrder
   $channel: String
 ) {
-  autoAccessoryProducts(
+  products(
     first: $first
     after: $after
     last: $last
@@ -20,7 +20,7 @@ query GetAutoAccessoryProducts(
   ) {
     edges {
       node {
-        ...AutoAccessoryProduct
+        ...ProductDetailsFragment
       }
     }
     pageInfo {

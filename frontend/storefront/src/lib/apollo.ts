@@ -3,7 +3,7 @@ import { setContext } from '@apollo/client/link/context';
 import { onError } from '@apollo/client/link/error';
 import { RetryLink } from '@apollo/client/link/retry';
 
-const SALEOR_API_URL = 'http://164.90.133.149:8000/graphql/';
+const SALEOR_API_URL = '/graphql/';
 const SALEOR_CHANNEL = 'online-store';
 
 // HTTP Link

@@ -96,12 +96,18 @@ export const HeroSection: React.FC<HeroSectionProps> = React.memo(({
                       <p className="text text--base hero-nav__text">
                         {slide.description}
                       </p>
-                      {index === activeSlideIndex && (
-                        <div className="hero-nav__indicator"></div>
-                      )}
                     </SwiperSlide>
                   ))}
                 </Swiper>
+                <div className="hero-nav__indicator-container">
+                  <div 
+                    className="hero-nav__indicator"
+                    style={{
+                      transform: `translateX(${activeSlideIndex * (100 / slides.length)}%)`,
+                      width: `${100 / slides.length}%`
+                    }}
+                  ></div>
+                </div>
               </div>
             </div>
           </div>

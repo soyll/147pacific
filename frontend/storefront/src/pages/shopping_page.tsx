@@ -73,7 +73,7 @@ export const ShoppingPage: React.FC = React.memo(() => {
     channel: 'online-store',
   });
 
-  const products = data?.autoAccessoryProducts?.edges?.map((edge: any) => ({
+  const products = data?.products?.edges?.map((edge: any) => ({
     id: edge.node.id,
     name: edge.node.name,
     model: edge.node.variants?.[0]?.sku || 'N/A',
@@ -82,10 +82,6 @@ export const ShoppingPage: React.FC = React.memo(() => {
     image: edge.node.thumbnail?.url || '/assets/images/shop/1.webp',
     models: edge.node.variants?.map((variant: any) => variant.sku) || []
   })) || [];
-
-  useEffect(() => {
-    console.log('products: ', data?.products.edges);
-  }, [products]);
 
   return (
     <main className="content">

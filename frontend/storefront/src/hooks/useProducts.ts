@@ -56,7 +56,12 @@ export const useCompatibleAccessories = (productId: string) => {
       first: 20,
       channel: 'online-store',
       filter: {
-        compatibleWith: productId
+        attributes: [
+          {
+            slug: "compatible-with",
+            values: [productId]
+          }
+        ]
       }
     },
     skip: !productId,
@@ -70,8 +75,16 @@ export const useCompatibleSubAccessories = (accessoryId: string) => {
       first: 20,
       channel: 'online-store',
       filter: {
-        compatibleWith: accessoryId,
-        productType: 'SUB_ACCESSORY'
+        attributes: [
+          {
+            slug: "compatible-with",
+            values: [accessoryId]
+          },
+          {
+            slug: "product-type",
+            values: ["SUB_ACCESSORY"]
+          }
+        ]
       }
     },
     skip: !accessoryId,
@@ -85,11 +98,12 @@ export const useVehicleCompatibility = (brand: string, model: string, year: stri
       first: 20,
       channel: 'online-store',
       filter: {
-        vehicleCompatibility: {
-          brand,
-          model,
-          year
-        }
+        attributes: [
+          {
+            slug: "vehicle-compatibility",
+            values: [`${brand} / ${model} / ${year}`]
+          }
+        ]
       }
     },
     skip: !brand || !model || !year,
@@ -107,7 +121,18 @@ export const useBedRackProducts = (variables: AutoAccessoryProductsVariables = {
     variables: {
       first: 20,
       channel: 'online-store',
-      // Убираем неправильные поля фильтра, используем только стандартные поля Saleor
+      filter: {
+        attributes: [
+          {
+            slug: "product-type",
+            values: ["ACCESSORY"]
+          },
+          {
+            slug: "product-category",
+            values: ["BED_RACK"]
+          }
+        ]
+      },
       ...variables
     },
     notifyOnNetworkStatusChange: true,
@@ -120,6 +145,18 @@ export const useBullBarProducts = (variables: AutoAccessoryProductsVariables = {
     variables: {
       first: 20,
       channel: 'online-store',
+      filter: {
+        attributes: [
+          {
+            slug: "product-type",
+            values: ["ACCESSORY"]
+          },
+          {
+            slug: "product-category",
+            values: ["BULL_BAR"]
+          }
+        ]
+      },
       ...variables
     },
     notifyOnNetworkStatusChange: true,
@@ -132,6 +169,18 @@ export const useHDGrilleGuardProducts = (variables: AutoAccessoryProductsVariabl
     variables: {
       first: 20,
       channel: 'online-store',
+      filter: {
+        attributes: [
+          {
+            slug: "product-type",
+            values: ["ACCESSORY"]
+          },
+          {
+            slug: "product-category",
+            values: ["HD_GRILLE_GUARD"]
+          }
+        ]
+      },
       ...variables
     },
     notifyOnNetworkStatusChange: true,
@@ -144,6 +193,18 @@ export const useRunningBoardProducts = (variables: AutoAccessoryProductsVariable
     variables: {
       first: 20,
       channel: 'online-store',
+      filter: {
+        attributes: [
+          {
+            slug: "product-type",
+            values: ["ACCESSORY"]
+          },
+          {
+            slug: "product-category",
+            values: ["RUNNING_BOARD"]
+          }
+        ]
+      },
       ...variables
     },
     notifyOnNetworkStatusChange: true,

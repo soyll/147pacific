@@ -31,14 +31,24 @@ channels:
       defaultTransactionFlowStrategy: "AUTHORIZATION"
 
 productTypes:
-  # Product Type: Кунг (Bed Rack)
   - name: "Bed Rack"
     hasVariants: true
     isShippingRequired: true
     weight: "0.0"
     taxClass: "standard"
     attributes:
+      - name: "Product Type"
+        slug: "product-type"
+        inputType: "DROPDOWN"
+        values:
+          - name: "ACCESSORY"
+      - name: "Product Category"
+        slug: "product-category"
+        inputType: "DROPDOWN"
+        values:
+          - name: "BED_RACK"
       - name: "Vehicle Compatibility"
+        slug: "vehicle-compatibility"
         inputType: "MULTISELECT"
         values:
           - name: "GMC / CANYON 2023-2025 / 5FT"
@@ -82,14 +92,24 @@ productTypes:
           - name: "Clamp Mount"
           - name: "Bolt-On"
 
-  # Product Type: Кенгурятник (Bull Bar)
   - name: "Bull Bar"
     hasVariants: true
     isShippingRequired: true
     weight: "0.0"
     taxClass: "standard"
     attributes:
+      - name: "Product Type"
+        slug: "product-type"
+        inputType: "DROPDOWN"
+        values:
+          - name: "ACCESSORY"
+      - name: "Product Category"
+        slug: "product-category"
+        inputType: "DROPDOWN"
+        values:
+          - name: "BULL_BAR"
       - name: "Vehicle Compatibility"
+        slug: "vehicle-compatibility"
         inputType: "MULTISELECT"
         values:
           - name: "FORD / F-150 2021-2025"
@@ -126,14 +146,24 @@ productTypes:
       - name: "Winch Compatible"
         inputType: "BOOLEAN"
 
-  # Product Type: Кенгурятник HD (HD Grille Guard)
   - name: "HD Grille Guard"
     hasVariants: true
     isShippingRequired: true
     weight: "0.0"
     taxClass: "standard"
     attributes:
+      - name: "Product Type"
+        slug: "product-type"
+        inputType: "DROPDOWN"
+        values:
+          - name: "ACCESSORY"
+      - name: "Product Category"
+        slug: "product-category"
+        inputType: "DROPDOWN"
+        values:
+          - name: "HD_GRILLE_GUARD"
       - name: "Vehicle Compatibility"
+        slug: "vehicle-compatibility"
         inputType: "MULTISELECT"
         values:
           - name: "FORD / F-450 2020-2025"
@@ -176,14 +206,24 @@ productTypes:
       - name: "Winch Compatible"
         inputType: "BOOLEAN"
 
-  # Product Type: Порог (Running Board)
   - name: "Running Board"
     hasVariants: true
     isShippingRequired: true
     weight: "0.0"
     taxClass: "standard"
     attributes:
+      - name: "Product Type"
+        slug: "product-type"
+        inputType: "DROPDOWN"
+        values:
+          - name: "ACCESSORY"
+      - name: "Product Category"
+        slug: "product-category"
+        inputType: "DROPDOWN"
+        values:
+          - name: "RUNNING_BOARD"
       - name: "Vehicle Compatibility"
+        slug: "vehicle-compatibility"
         inputType: "MULTISELECT"
         values:
           - name: "FORD / F-150 2021-2025 / CREW CAB"
@@ -232,13 +272,25 @@ productTypes:
           - name: "500 lbs"
           - name: "750 lbs"
 
-  # Product Type: SubAccessory (для всех типов аксессуаров)
   - name: "SubAccessory"
     hasVariants: true
     isShippingRequired: true
     weight: "0.0"
     taxClass: "standard"
     attributes:
+      - name: "Product Type"
+        slug: "product-type"
+        inputType: "DROPDOWN"
+        values:
+          - name: "SUB_ACCESSORY"
+      - name: "Compatible With"
+        slug: "compatible-with"
+        inputType: "MULTISELECT"
+        values:
+          - name: "Bed Rack R-G822-PXXX-B"
+          - name: "Bull Bar B-G123-PXXX-B"
+          - name: "HD Grille Guard H-G456-PXXX-B"
+          - name: "Running Board R-G789-PXXX-B"
       - name: "Compatible Accessories"
         inputType: "MULTISELECT"
         values:
@@ -334,9 +386,7 @@ pageTypes:
           - name: "Dealers"
           - name: "General"
 
-# Примеры продуктов
 products:
-  # Bed Rack Example
   - name: "Bed Rack R-G822-PXXX-B"
     description: "Heavy-duty bed rack system for pickup trucks. Provides secure mounting points for additional accessories and cargo protection."
     productType: "Bed Rack"
@@ -368,7 +418,6 @@ products:
             price: "899.00"
             costPrice: "450.00"
 
-  # SubAccessory Example
   - name: "Bed Rack Panel Kit R-G822-P22X-B"
     description: "Panel kit for Bed Rack R-G822-PXXX-B. Provides additional cargo protection and mounting options."
     productType: "SubAccessory"
@@ -400,7 +449,6 @@ products:
             price: "229.00"
             costPrice: "115.00"
 
-  # Bull Bar Example
   - name: "Bull Bar B-F150-2021-B"
     description: "Heavy-duty bull bar for Ford F-150 2021-2025. Provides front-end protection and mounting points for lights."
     productType: "Bull Bar"

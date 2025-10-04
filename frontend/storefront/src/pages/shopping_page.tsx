@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ProductRow } from '@/components/features/product_row';
 import { HeroSection } from '@/components/features/hero_section';
@@ -82,6 +82,10 @@ export const ShoppingPage: React.FC = React.memo(() => {
     image: edge.node.thumbnail?.url || '/assets/images/shop/1.webp',
     models: edge.node.variants?.map((variant: any) => variant.sku) || []
   })) || [];
+
+  useEffect(() => {
+    console.log('products: ', products);
+  }, [products]);
 
   return (
     <main className="content">
@@ -271,15 +275,12 @@ export const ShoppingPage: React.FC = React.memo(() => {
                       </div>
                     ) : (
                       products.map((product: any) => (
-                        <>
-                          <span>{product.id}</span>
-                          <ProductRow
-                            key={product.id}
-                            product={product}
-                            variant="default"
-                            onBuild={handleBuildClick}
-                          />
-                        </>
+                        <ProductRow
+                          key={product.id}
+                          product={product}
+                          variant="default"
+                          onBuild={handleBuildClick}
+                        />
                       ))
                     )}
                   </div>

@@ -3,16 +3,8 @@ import { setContext } from '@apollo/client/link/context';
 import { onError } from '@apollo/client/link/error';
 import { RetryLink } from '@apollo/client/link/retry';
 
-const SALEOR_API_URL = (import.meta as any).env?.VITE_SALEOR_API_URL;
-const SALEOR_CHANNEL = (import.meta as any).env?.VITE_SALEOR_CHANNEL || 'online-store';
-
-if (!SALEOR_API_URL) {
-  console.error('VITE_SALEOR_API_URL не установлена!');
-  throw new Error('VITE_SALEOR_API_URL environment variable is required');
-}
-
-console.log('SALEOR_API_URL: ', SALEOR_API_URL);
-console.log('SALEOR_CHANNEL: ', SALEOR_CHANNEL);
+const SALEOR_API_URL = 'http://164.90.133.149:8000/graphql/';
+const SALEOR_CHANNEL = 'online-store';
 
 // HTTP Link
 const httpLink = createHttpLink({

@@ -84,7 +84,7 @@ export const ShoppingPage: React.FC = React.memo(() => {
   })) || [];
 
   useEffect(() => {
-    console.log('products: ', products);
+    console.log('products: ', data?.products.edges);
   }, [products]);
 
   return (

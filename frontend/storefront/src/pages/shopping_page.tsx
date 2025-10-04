@@ -77,8 +77,8 @@ export const ShoppingPage: React.FC = React.memo(() => {
     id: edge.node.id,
     name: edge.node.name,
     model: edge.node.variants?.[0]?.sku || 'N/A',
-    description: edge.node.description || 'No description available',
-    price: edge.node.pricing?.priceRange?.start?.gross?.amount || 0,
+    description: JSON.parse(edge.node.description).blocks[0].data.text || 'No description available',
+    price: edge.node.pricing?.priceRange?.start?.net?.amount || 0,
     image: edge.node.thumbnail?.url || '/assets/images/shop/1.webp',
     models: edge.node.variants?.map((variant: any) => variant.sku) || []
   })) || [];

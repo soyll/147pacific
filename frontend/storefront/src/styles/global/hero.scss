@@ -131,6 +131,7 @@
   background-color: var(--color-accent);
   border-radius: 2px;
   transition: transform 0.3s ease;
+  transform-origin: left center;
 }
 
 .hero-nav__item {

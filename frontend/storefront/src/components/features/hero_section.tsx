@@ -103,7 +103,7 @@ export const HeroSection: React.FC<HeroSectionProps> = React.memo(({
                   <div 
                     className="hero-nav__indicator"
                     style={{
-                      transform: `translateX(${activeSlideIndex * (100 / slides.length)}%)`,
+                      transform: `translateX(${activeSlideIndex * 100}%)`,
                       width: `${100 / slides.length}%`
                     }}
                   ></div>

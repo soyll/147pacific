@@ -1,12 +1,10 @@
 import React, { useState } from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
-import { FreeMode, Scrollbar, Thumbs } from 'swiper/modules';
+import { FreeMode, Thumbs } from 'swiper/modules';
 import type { Swiper as SwiperType } from 'swiper';
 
-// Import Swiper styles
 import 'swiper/css';
 import 'swiper/css/free-mode';
-import 'swiper/css/scrollbar';
 import 'swiper/css/thumbs';
 
 export interface HeroSlide {
@@ -28,12 +26,12 @@ export const HeroSection: React.FC<HeroSectionProps> = React.memo(({
   bannerDescription
 }) => {
   const [heroNavSwiper, setHeroNavSwiper] = useState<SwiperType | null>(null);
+  const [activeSlideIndex, setActiveSlideIndex] = useState(0);
 
   return (
     <div className="hero">
       <div className="hero-gradient-top"></div>
       <div className="hero__wrapper">
-        {/* Background Swiper */}
         <Swiper
           modules={[Thumbs]}
           className="swiper hero-slider"
@@ -41,6 +39,7 @@ export const HeroSection: React.FC<HeroSectionProps> = React.memo(({
           slidesPerView={1}
           loop={true}
           thumbs={{ swiper: heroNavSwiper && !heroNavSwiper.destroyed ? heroNavSwiper : null }}
+          onSlideChange={(swiper) => setActiveSlideIndex(swiper.realIndex)}
         >
           {slides.map((slide) => (
             <SwiperSlide key={slide.id} className="hero-item">
@@ -51,7 +50,6 @@ export const HeroSection: React.FC<HeroSectionProps> = React.memo(({
           ))}
         </Swiper>
 
-        {/* Hero Main Content */}
         <div className="hero-main">
           <div className="container">
             <div className="hero-main__wrapper">
@@ -72,16 +70,13 @@ export const HeroSection: React.FC<HeroSectionProps> = React.memo(({
 
               <div className="hero-nav">
                 <Swiper
-                  modules={[FreeMode, Scrollbar]}
+                  modules={[FreeMode]}
                   className="swiper hero-nav__slider"
                   onSwiper={setHeroNavSwiper}
                   spaceBetween={16}
                   slidesPerView="auto"
                   freeMode={true}
                   watchSlidesProgress={true}
-                  scrollbar={{
-                    el: ".hero-nav__scrollbar",
-                  }}
                   breakpoints={{
                     768: {
                       slidesPerView: 4,
@@ -93,7 +88,7 @@ export const HeroSection: React.FC<HeroSectionProps> = React.memo(({
                     }
                   }}
                 >
-                  {slides.map((slide) => (
+                  {slides.map((slide, index) => (
                     <SwiperSlide key={slide.id} className="hero-nav__item">
                       <p className="hero-nav__title">
                         {slide.title}
@@ -101,10 +96,12 @@ export const HeroSection: React.FC<HeroSectionProps> = React.memo(({
                       <p className="text text--base hero-nav__text">
                         {slide.description}
                       </p>
+                      {index === activeSlideIndex && (
+                        <div className="hero-nav__indicator"></div>
+                      )}
                     </SwiperSlide>
                   ))}
                 </Swiper>
-                <div className="hero-nav__scrollbar"></div>
               </div>
             </div>
           </div>
@@ -116,4 +113,3 @@ export const HeroSection: React.FC<HeroSectionProps> = React.memo(({
 });
 
 HeroSection.displayName = 'HeroSection';
-
